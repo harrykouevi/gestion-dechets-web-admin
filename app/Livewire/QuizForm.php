@@ -141,7 +141,7 @@ class QuizForm extends Component
 
             foreach($data['questions'] as $q_key => $question ){
                 foreach($question['reponses'] as $r_key => $reponse ){
-                    $data['questions'][$q_key]['reponses'][$r_key]['is_correct'] =   $reponse['isCorrect'] ;
+                    $data['questions'][$q_key]['reponses'][$r_key]['is_correct'] =   $reponse['isCorrect'] ?? false ;
                 }
             }
 

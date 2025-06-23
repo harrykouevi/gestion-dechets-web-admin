@@ -118,7 +118,7 @@ class QuizForm extends Component
                 'quizz_questions.*.texte'=> 'required|string',
                 'quizz_questions.*.reponses'=> 'array',
                 'quizz_questions.*.reponses.*.texte'=> 'required|string',
-                'quizz_questions.*.reponses.*.isCorrect'=> 'required',
+                'quizz_questions.*.reponses.*.isCorrect'=> 'nullable|boolean',
             ],[
                 'quizz_titre.required' => 'The titre field is required.',
                 'quizz_content.required' => 'The content field is required.',

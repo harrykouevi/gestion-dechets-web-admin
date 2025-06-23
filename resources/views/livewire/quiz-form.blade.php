@@ -268,19 +268,22 @@
     </form>
 
     @if( isset($quizzId) && !is_null($quizzId) )
-    <form id="QuizQuestionsForm" >
+    
        
         <hr class="my-4">
         <h4 class="text-success mb-3">🧠 Les Questions</h4>
 
       
         @foreach($quizz_questions as $index => $question)
-        
+        <form id="QuizQuestionsForm{{ $index }}" question-form-attached="true" >
+             @csrf
+
         <div class="card rounded-3 border-0 bg-white">
             <div class="card-body">
                 
                 <div class=" p-4 rounded shadow-sm border bg-light-subtle">
-                
+                    <input type="hidden"  wire:model.defer="quizz_questions.{{ $index }}.id" class="form-control" placeholder="Tape ici la question..." value="{{ $question['text'] ?? '' }}" required>
+                    
                     <div class="mb-3">
                         <label for="post_id" class="form-label fw-bold text-secondary">
                             📘 Type de question
@@ -338,7 +341,7 @@
 
                     <div class="mb-4">
                         <div class="text-end">
-                            <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 shadow">
+                            <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 shadow disabled">
                                 {{ isset($question['id']) ? '💾 Mettre à jour une question' : '💾  Enrégistrer une question' }}
                             </button>
                         </div>
@@ -346,7 +349,7 @@
                 </div>
             </div>
         </div>
-       
+    </form>  
         @endforeach
         
 
@@ -358,6 +361,6 @@
 
         
         
-    </form>
+    
     @endif
 </div>

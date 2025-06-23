@@ -272,25 +272,74 @@
             initSummernoteWhenReady(summernote);
 
             // Attente que Livewire + component soient prêts
-            document.getElementById('QuizForm').addEventListener('submit', function (e) {
-                e.preventDefault();
+            // document.getElementById('QuizForm').addEventListener('submit', function (e) {
+            //     e.preventDefault();
 
-                const componentEl = document.querySelector('[wire\\:id]');
-                const component = Livewire.find(componentEl.getAttribute('wire:id'));
-                if (!component) {
-                    alert('Composant Livewire non encore prêt.');
-                    return;
-                }
+            //     const componentEl = document.querySelector('[wire\\:id]');
+            //     const component = Livewire.find(componentEl.getAttribute('wire:id'));
+            //     if (!component) {
+            //         alert('Composant Livewire non encore prêt.');
+            //         return;
+            //     }
                 
-                // const submitBtn = document.querySelector('saveButton');
-                // submitBtn.disabled = true;
-                let contents = summernote.summernote('code');
-                component.set('quizz_description', contents).then(
-                        () => {
-                            component.call('saveQuiz')
+            //     // const submitBtn = document.querySelector('saveButton');
+            //     // submitBtn.disabled = true;
+            //     let contents = summernote.summernote('code');
+            //     component.set('quizz_description', contents).then(
+            //             () => {
+            //                 component.call('saveQuiz')
                          
-                        }
-                    );
+            //             }
+            //         );
+            // });
+
+         
+
+            document.querySelectorAll('button[type="submit"]').forEach(button => {
+                button.addEventListener('click', function (e) {
+                    
+                    const form = this.closest('form'); // Récupère le formulaire parent
+                    
+                    if (form.hasAttribute('question-form-attached')) {
+                        form.addEventListener('submit', function (e) {
+                            e.preventDefault();
+                            const componentEl = document.querySelector('[wire\\:id]');
+                            const component = Livewire.find(componentEl.getAttribute('wire:id'));
+                            if (!component) {
+                                alert('Composant Livewire non encore prêt.');
+                                return;
+                            }
+                            const str = form?.id;
+                            const num = str.replace("QuizQuestionsForm", "");
+                            alert(num) ;
+                            component.call('saveQuestion', num)
+                        });
+                    }
+
+                    if(form?.id == "QuizForm"){
+                        form.addEventListener('submit', function (e) {
+                            e.preventDefault();
+
+                            const componentEl = document.querySelector('[wire\\:id]');
+                            const component = Livewire.find(componentEl.getAttribute('wire:id'));
+                            if (!component) {
+                                alert('Composant Livewire non encore prêt.');
+                                return;
+                            }
+                            
+                            // const submitBtn = document.querySelector('saveButton');
+                            // submitBtn.disabled = true;
+                            let contents = summernote.summernote('code');
+                            component.set('quizz_description', contents).then(
+                                    () => {
+                                        component.call('saveQuiz')
+                                    
+                                    }
+                                );
+                        });
+
+                    }
+                });
             });
         }
     );

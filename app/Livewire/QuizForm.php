@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Services\PostService;
+use App\Services\QuestionService;
 use App\Services\QuizService;
 use Livewire\Component;
 
@@ -154,6 +155,88 @@ class QuizForm extends Component
             }
             
           
+            if (isset($response['errors'])) {
+                $this->addError('general_erreur', '<p>Une erreur est survenue</p>');
+                foreach ($response['errors'] as $field => $messages) {
+                    if(is_string($messages)){
+                        foreach (['id','titre', 'description','passing score', 'nombre question', 'post id'] as $needle) {
+                            if (str_contains($messages, $needle)) {
+                                $this->addError('quizz_'. str_replace(' ', '_', $needle), str_replace("Validation Error:", '', $messages));
+                            }
+                        }
+
+                        foreach (['questions.'] as $needle) {
+                            preg_match('/' . preg_quote($needle, '/') . '[\w\d_.]+/', $messages, $matches);
+                            if (!empty($matches)) {
+                                $this->addError('quizz_'. $matches[0], str_replace("Validation Error:", '', $messages));
+                            }
+                        }
+                    }
+                    foreach ((array)$messages as $message) {
+                        $this->addError($field, $message);
+                    }
+                }
+                
+            }
+        
+
+            if (isset($response['success']) && $response['success'] == true) {
+                session()->flash('success', 'Opération réussie !');
+                $this->successMessage = "Opération réussie !";
+                if ($this->quizzId) {
+                }else{
+                    return redirect()->route('quizzes.edit',['id'=>$response['data']['id']]);
+                }
+            }
+        }catch (\Exception $e) {
+        
+
+            $this->addError('general', 'Erreur : ' . $e->getMessage());
+        }
+            
+    }
+
+    public function saveQuestion($index)
+    {
+        $this->resetErrorBag();
+        $questionService = app(QuestionService::class);
+        // $this->dispatch('savedff');
+        $data_v = $this->validate([
+                // 'quizz_postId' => 'required',
+                // 'quizz_titre' => 'required|string|max:255',
+                // 'quizz_passing_score' => 'required',
+                // 'quizz_nombre_question' => 'required',
+                // // 'quizz_type' => 'required|string',
+                // 'quizz_type' => 'required',
+                'quizz_questions'=> 'required|array|min:1',
+                'quizz_questions.*.type'=> 'required|string',
+                'quizz_questions.*.texte'=> 'required|string',
+                'quizz_questions.*.reponses'=> 'array',
+                'quizz_questions.*.reponses.*.texte'=> 'required|string',
+                'quizz_questions.*.reponses.*.isCorrect'=> 'nullable|boolean',
+            ],[
+                'quizz_titre.required' => 'The titre field is required.',
+                'quizz_content.required' => 'The content field is required.',
+                'quizz_description.required' => 'The description field is required.',
+                'quizz_type.required' => 'The type field is required.',
+            ]
+        );
+
+        try{ 
+            // dd($data_v['quizz_questions']) ;
+            $data = $data_v['quizz_questions'][$index] ;
+            
+            foreach($data['reponses'] as $r_key => $reponse ){
+                $data['reponses'][$r_key]['is_correct'] =   $reponse['isCorrect'] ?? false ;
+            }
+            
+          
+            if ($this->quizz_questions[$index]['id']) {
+                $response = $questionService->update($this->quizz_questions[$index]['id'],$data) ; 
+            } else {
+                $response = $questionService->create($data) ; 
+            }
+            
             if (isset($response['errors'])) {
                 $this->addError('general_erreur', '<p>Une erreur est survenue</p>');
                 foreach ($response['errors'] as $field => $messages) {

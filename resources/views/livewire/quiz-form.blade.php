@@ -224,7 +224,7 @@
                                     <div class="input-group mb-2">
                                         <input  id="question_{{ $index }}_prop{{ $i }}"  type="text"  wire:model.defer="quizz_questions.{{ $index }}.reponses.{{ $i }}.texte" class="form-control me-3 border-info shadow-sm" placeholder="Réponse possible ... {{ $i }}">
                                         {{-- Bouton de suppression de la proposition --}}
-                                        <button  type="button"  wire:click="removeProposition({{ $index }}, {{ $i }})"  class="btn btn-outline-danger" > 🗑 </button>
+                                        <button  type="button"  wire:click="removeProposition({{ $index }}, {{ $i }})"  class="btn btn-outline-danger disabled" > 🗑 </button>
                                     </div>
                                     {{-- Case à cocher pour indiquer la bonne réponse --}}
                                     <div class="form-check form-switch">

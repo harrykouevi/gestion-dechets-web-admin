@@ -258,7 +258,7 @@
             </button>
             @if( isset($quizzId) && !is_null($quizzId))
             
-                <button type="submit" class="btn btn-success rounded-pill px-5 py-2 shadow disabled">
+                <button  class="btn btn-success rounded-pill px-5 py-2 shadow " wire:loading.attr="disabled">
                     🚀 Lancer le Quiz
                 </button>
             

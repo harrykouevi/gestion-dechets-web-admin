@@ -311,7 +311,6 @@
                             }
                             const str = form?.id;
                             const num = str.replace("QuizQuestionsForm", "");
-                            alert(num) ;
                             component.call('saveQuestion', num)
                         });
                     }
@@ -333,7 +332,6 @@
                             component.set('quizz_description', contents).then(
                                     () => {
                                         component.call('saveQuiz')
-                                    
                                     }
                                 );
                         });

@@ -8,8 +8,9 @@
     <!-- Page Heading -->
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Tableau de bord</h1>
-        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
-                class="fas fa-download fa-sm text-white-50"></i> Generate Report</a>
+        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm disabled">
+            <i class="fas fa-download fa-sm text-white-50"></i> Generate Report
+        </a>
     </div>
 
     <!-- Content Row -->
@@ -207,8 +208,9 @@
                     <h6 class="m-0 font-weight-bold text-primary">Carte interactive</h6>
                 </div>
                 <div class="card-body">
-                    
-                    <iframe src="{{ route('proxy-carte') }}" width="100%" height="600" style="border: none;"></iframe>
+                    <img src="{{ asset('img/290497-P72QT9-640.jpg') }}" style="width:100%" >
+
+                    {{-- <iframe src="{{ route('proxy-carte') }}" width="100%" height="600" style="border: none;"></iframe> --}}
                 </div>
             </div>
         </div>

@@ -59,9 +59,9 @@
                         
                     <!-- Bouton -->
                     <div class="d-flex justify-content-end mt-4">
-                        <button wire:click="resetFilters" class="btn btn-outline-secondary mr-2">🔄 Réinitialiser</button>
+                        <button wire:click="resetFilters" class="btn btn-outline-secondary mr-2 disabled">🔄 Réinitialiser</button>
 
-                        <button class="btn btn-primary" wire:click="applyFilters">Filtrer</button>
+                        <button class="btn btn-primary disabled" wire:click="applyFilters">Filtrer</button>
 
                     </div>
                 </div>
@@ -69,7 +69,6 @@
             </div>
         </div>
         <div class="col-md-12">
-             <div>Valeur actuelle : {{ $postIdToDelete }}</div>
             <div class="card shadow mb-4">
                 
                 <div class="card-body">
@@ -142,7 +141,6 @@
                     <button type="button" id="closeModalLabel" class="btn-close " data-dismiss="modal"  aria-label="Fermer"></button>
                 </div>
                 <div class="modal-body">
-                    <div>Valeur actuelle : {{ $postIdToDelete }}</div>
                     Voulez-vous vraiment supprimer ce post ?
                 </div>
                 <div class="modal-footer">

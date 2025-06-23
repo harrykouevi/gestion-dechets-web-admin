@@ -148,15 +148,6 @@
                     component.set('post_content', contents).then(
                         () => {
                             component.call('save')
-                            // .then(
-                            //     () => {
-                                    // setTimeout(() => {
-                                    //     alert(contents) ;
-                                    //     // submitBtn.disabled = false; // re-enable after save done
-                                    // }, 2250);
-                            //     }
-                            // ); 
-                            
                         }
                     );
                 }

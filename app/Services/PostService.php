@@ -10,6 +10,11 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Database\Eloquent\Builder ;
 use Illuminate\Support\Facades\Auth;
 use InvalidArgumentException;
+use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\UploadedFile;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class PostService
 {
@@ -79,29 +84,100 @@ class PostService
         throw new \Exception('Erreur lors de la récupération des posts');
     }
 
-    public function create(array $data) //Password125
+    /**
+     * Attache un fichier Livewire à une requête HTTP Laravel.
+     *
+     * @param PendingRequest $http  Objet Laravel HTTP en cours
+     * @param string         $field Nom du champ à envoyer
+     * @param UploadedFile   $file  Fichier Livewire
+     * @return PendingRequest       L'objet HTTP mis à jour
+     * @throws \Exception
+     */
+    public function attachFileToHttp(PendingRequest $http, string $field, UploadedFile $file): PendingRequest
     {
-        $data['admin_id']= session('user')['id'];
-        if(in_array('educatif',$data)){
-            $response = Http::withToken(session('token'))
-            ->withHeaders(['Accept' => 'application/json'])
-            ->post(env('API_SERVICE_URL') . "/api/blogs/post/educatif", $data);
-        }else{
-            $response = Http::withToken(session('token'))
-            ->withHeaders(['Accept' => 'application/json'])
-            ->post(env('API_SERVICE_URL') . "/api/blogs/post", $data);
+        $originalName = $file->getClientOriginalName();
+        $realPath = $file->getRealPath();
+
+        if (!file_exists($realPath) || !is_readable($realPath)) {
+            // Copier dans un fichier lisible temporaire
+            // dd('ggg') ;
+            $tempFilename = 'tmp_' . Str::uuid() . '_' . $originalName;
+            $publicTempPath = storage_path('app/public/' . $tempFilename);
+            
+            copy($realPath, $publicTempPath);
+
+            // Assure que le fichier sera supprimé plus tard (optionnel)
+            register_shutdown_function(function () use ($publicTempPath) {
+                if (file_exists($publicTempPath)) {
+                    @unlink($publicTempPath);
+                }
+            });
+
+            return $http->attach($field, fopen($publicTempPath, 'r'), $originalName);
         }
-        
-        return $this->render($response);
-        
+
+        // Fichier lisible, pas besoin de copie
+        return $http->attach($field, fopen($realPath, 'r'), $originalName);
     }
 
-    public function update(string $id, array $data)
+    public function create(array $data, $mediaFiles  = [])
+    {
+        $data['admin_id'] = session('user')['id'];
+
+        $http = Http::withToken(session('token'))
+          ->asMultipart() // Nécessaire pour les fichiers
+                    ->withHeaders(['Accept' => 'application/json']);
+       
+        
+        foreach ($mediaFiles as $index => $media) {
+            if (!empty($media['file'])) {
+                $http = $this->attachFileToHttp($http, "medias[$index][file]", $media['file']);
+            }
+        
+            $data["medias[$index][type]"] = 'image';
+            if (isset($media['type'])) {
+                $data["medias[$index][type]"] = $media['type'];
+            }
+        }
+       
+        $endpoint = $data['type'] === 'educatif'
+            ? env('API_SERVICE_URL') . "/api/blogs/post/educatif"
+            : env('API_SERVICE_URL') . "/api/blogs/post";
+
+       
+    
+        $response = $http->post($endpoint, $data);
+       
+        return $this->render($response);
+    }
+
+    
+
+    public function update(string $id, array $data , $mediaFiles  = [])
     {
         $data['admin_id']= session('user')['id'];
-        $response = Http::withToken(session('token'))
-            ->withHeaders(['Accept' => 'application/json'])
-            ->patch(env('API_SERVICE_URL') . "/api/blogs/post/update/".$id, $data);
+       
+        $http = Http::withToken(session('token'))
+          ->asMultipart() // Nécessaire pour les fichiers
+                    ->withHeaders(['Accept' => 'application/json']);
+       
+         // Spoof de la méthode PATCH
+        $http = $http->attach('_method', 'PATCH');
+
+        foreach ($mediaFiles as $index => $media) {
+            dd('rrr');
+            if (!empty($media['file'])) {
+                $http = $this->attachFileToHttp($http, "medias[$index][file]", $media['file']);
+            }
+        
+            $data["medias[$index][type]"] = 'image';
+            if (isset($media['type'])) {
+                $data["medias[$index][type]"] = $media['type'];
+            }
+        }
+
+       
+        $response = $http->post(env('API_SERVICE_URL') . "/api/blogs/post/update/".$id, $data);
        
         return $this->render($response);
     }

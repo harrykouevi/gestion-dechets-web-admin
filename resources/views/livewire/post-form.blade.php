@@ -47,6 +47,82 @@
             @error('post_description') <small class="text-danger">{{ $message }}</small> @enderror
         </div>
 
+        <div class="mb-4">
+            <label class="form-label fw-bold text-secondary">Médias</label>
+            @foreach($medias_to_show as $index => $media)
+                <div class="d-flex align-items-start gap-3 mb-3">
+                    {{-- Aperçu à gauche --}}
+                    @if (isset($post_medias[$index]['file']) && $post_medias[$index]['file'])
+                        <div class="flex-shrink-0 mr-2">
+                            <img src="{{ $post_medias[$index]['file']->temporaryUrl() }}"
+                                alt="media preview"
+                                class="img-thumbnail shadow-sm"
+                                style="width: 120px; height: auto;">
+                        </div>
+                    @else
+                        @if (isset($media['path']) && $media['path'])
+                        <div class="flex-shrink-0 mr-2">
+                            <img src="{{ $media['path'] }}"
+                                alt="media preview"
+                                class="img-thumbnail shadow-sm"
+                                style="width: 120px; height: auto;">
+                        </div>
+                        @endif
+                    @endif
+
+                    {{-- Input file + type + delete --}}
+                    <div class="flex-grow-1">
+                        <div class="d-flex gap-2 mb-2 align-items-center">
+                            <input type="file" wire:model="post_medias.{{ $index }}.file" class="form-control shadow-sm mr-2">
+                            
+                            <select id="post_type" wire:model="post_medias.{{ $index }}.type" class="form-control rounded-3 shadow-sm mr-2" style="width:150px;">
+                                <option value="">Type</option>
+                                <option value="image">Image</option>
+                            </select>
+                            <button type="button" class="btn btn-sm btn-danger" wire:click.prevent="removeMedia({{ $index }})">✖</button>
+                        </div>
+                        @error("post_medias.$index.file") <small class="text-danger">{{ $message }}</small> @enderror
+                        @error("post_medias.$index.type") <small class="text-danger">{{ $message }}</small> @enderror
+                        <div wire:loading wire:target="post_medias.{{ $index }}.file" class="text-info">Chargement du média…</div>
+                    </div>
+                </div>
+            @endforeach
+            @foreach($post_medias as $index => $media)
+            @if (!isset($medias_to_show[$index]))
+
+                <div class="d-flex align-items-start gap-3 mb-3">
+                    {{-- Aperçu à gauche --}}
+                    @if (isset($media['file']) && $media['file'])
+                        <div class="flex-shrink-0 mr-2">
+                            <img src="{{ $media['file']->temporaryUrl() }}"
+                                alt="media preview"
+                                class="img-thumbnail shadow-sm"
+                                style="width: 120px; height: auto;">
+                        </div>
+                    @endif
+
+                    {{-- Input file + type + delete --}}
+                    <div class="flex-grow-1">
+                        <div class="d-flex gap-2 mb-2 align-items-center">
+                            <input type="file" wire:model="post_medias.{{ $index }}.file" class="form-control shadow-sm mr-2 ">
+                            
+                            <select id="post_type" wire:model="post_medias.{{ $index }}.type" class="form-control rounded-3 shadow-sm mr-2 " style="width:150px;">
+                                <option value="">Type</option>
+                                <option value="image">Image</option>
+                            </select>
+                            <button type="button" class="btn btn-sm btn-danger " wire:click.prevent="removeMedia({{ $index }})">✖</button>
+                        </div>
+                        @error("post_medias.$index.file") <small class="text-danger">{{ $message }}</small> @enderror
+                        @error("post_medias.$index.type") <small class="text-danger">{{ $message }}</small> @enderror
+                        <div wire:loading wire:target="post_medias.{{ $index }}.file" class="text-info">Chargement du média…</div>
+                    </div>
+                </div>
+            @endif
+            @endforeach
+
+            <button type="button" class="btn btn-sm btn-outline-primary" wire:click.prevent="addMedia">+ Ajouter un média</button>
+        </div>
+
         <div class="mb-4"  wire:ignore>
             <label for="post_content" class="form-label fw-bold text-secondary">Contenu du Post</label>
             <textarea   id="post_content" wire:model="post_content"  class="form-control rounded-3 shadow-sm" rows="5" placeholder="Rédige ici le contenu éducatif…"   style="display:none" ></textarea>
@@ -64,11 +140,21 @@
         </div>
 
         <div class="text-end">
-            <button type="submit" id="saveButton" class="btn btn-primary  px-5 py-2 shadow">
+            <button 
+                type="submit" 
+                class="btn btn-primary px-5 py-2 shadow"
+                wire:loading.attr="disabled"
+                wire:target="@foreach($post_medias as $index => $m) medias.{{ $index }}.file, @endforeach"
+            >
+
                 {{ $postId ? '💾 Mettre à jour le Post' : '🚀 Enrégistrer' }}
             </button>
             @if( ! $postId)
-            <button type="submit" class="btn btn-default px-5 py-2 shadow">
+            <button 
+            type="submit" 
+            class="btn btn-outline-secondary px-5 py-2 shadow"
+            wire:loading.attr="disabled"
+            wire:target="@foreach($post_medias as $index => $m) post_medias.{{ $index }}.file, @endforeach"  >
                 {{ '🚀 Enrégistrer et créer un quiz' }}
             </button>
             @endif

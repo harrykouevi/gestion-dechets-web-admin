@@ -165,7 +165,7 @@ class PostService
         $http = $http->attach('_method', 'PATCH');
 
         foreach ($mediaFiles as $index => $media) {
-            dd('rrr');
+            
             if (!empty($media['file'])) {
                 $http = $this->attachFileToHttp($http, "medias[$index][file]", $media['file']);
             }

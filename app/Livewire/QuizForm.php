@@ -117,7 +117,10 @@ class QuizForm extends Component
                 'quizz_questions'=> 'required|array|min:1',
                 'quizz_questions.*.type'=> 'required|string',
                 'quizz_questions.*.texte'=> 'required|string',
+                'quizz_questions.*.points'=> 'required',
                 'quizz_questions.*.reponses'=> 'array',
+                'quizz_questions.*.reponses.*.points'=> 'required',
+
                 'quizz_questions.*.reponses.*.texte'=> 'required|string',
                 'quizz_questions.*.reponses.*.isCorrect'=> 'nullable|boolean',
             ],[
@@ -154,7 +157,7 @@ class QuizForm extends Component
                 $response = $quizzService->create($data) ; 
             }
             
-          
+         
             if (isset($response['errors'])) {
                 $this->addError('general_erreur', '<p>Une erreur est survenue</p>');
                 foreach ($response['errors'] as $field => $messages) {
@@ -212,6 +215,7 @@ class QuizForm extends Component
                 'quizz_questions.*.type'=> 'required|string',
                 'quizz_questions.*.texte'=> 'required|string',
                 'quizz_questions.*.reponses'=> 'array',
+                'quizz_questions.*.reponses.*.points'=> 'required|string',
                 'quizz_questions.*.reponses.*.texte'=> 'required|string',
                 'quizz_questions.*.reponses.*.isCorrect'=> 'nullable|boolean',
             ],[

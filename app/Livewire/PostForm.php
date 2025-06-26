@@ -30,11 +30,10 @@ class PostForm extends Component
         $this->postService = $postService;
         if ($id) {
             $this->post = $post = $this->postService->get($id,['medias']) ;
-
             $this->postId = $post['id'];
             $this->post_titre = $post['titre'];
             $this->post_content = $post['content'] ;
-            $this->post_description = in_array('description',$post)? $post['description'] : "" ;
+            $this->post_description = $post['description'] ?? "" ;
             $this->post_type = $post['type'] ;
             $this->medias_to_show = $post['medias'] ;
             $this->existing_medias_last_index = count($this->medias_to_show) - 1 ;

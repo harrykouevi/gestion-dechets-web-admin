@@ -126,6 +126,21 @@
                                 @error('quizz_questions.0.texte') <small class="text-danger">{{ $message }}</small> @enderror
                             </div>
 
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-primary">
+                                    🎯 Nombre de points
+                                </label>
+                                <input 
+                                    type="number" 
+                                    wire:model.defer="quizz_questions.0.points" 
+                                    class="form-control border-primary shadow-sm" 
+                                    placeholder="Ex : 5"
+                                    required
+                                >
+                                @error('quizz_questions.0.points') <small class="text-danger">{{ $message }}</small> @enderror
+
+                            </div>
+
                         
                             <div class="mb-2">
                                 <label class="form-label fw-bold text-primary"> 💡 Propositions (optionnel) </label>
@@ -147,6 +162,21 @@
                                         {{-- Bouton de suppression de la proposition --}}
                                         <button  type="button"  wire:click="removeProposition(0, {{ $i }})"  class="btn btn-outline-danger" > 🗑 </button>
                                     </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold text-primary">
+                                            🎯 Nombre de points
+                                        </label>
+                                        <input 
+                                            type="number" 
+                                            wire:model.defer="quizz_questions.0.reponses.{{ $i }}.points" 
+                                            class="form-control border-primary shadow-sm" 
+                                            placeholder="Ex : 5"
+                                            required
+                                        >
+                                        @error('quizz_questions.0.points') <small class="text-danger">{{ $message }}</small> @enderror
+
+                                    </div>
+
                                     {{-- Case à cocher pour indiquer la bonne réponse --}}
                                     <div class="form-check form-switch">
                                         <input  class="form-check-input custom-checkbox"  type="checkbox"  wire:model.defer="quizz_questions.0.reponses.{{ $i }}.isCorrect" id="correct_quest_0_prop{{ $i }}">
@@ -155,6 +185,7 @@
                                     @error('quizz_questions.0.reponses.'. $i.'.texte') <small class="text-danger">{{ $message }}</small> @enderror
                                     @error('quizz_questions.0.reponses.'. $i.'.is_correct') <small class="text-danger">{{ $message }}</small> @enderror
                                     @error('quizz_questions.0.reponses.'. $i.'.isCorrect') <small class="text-danger">{{ $message }}</small> @enderror
+                                    @error('quizz_questions.0.reponses.'. $i.'.points') <small class="text-danger">{{ $message }}</small> @enderror
                             
                                 </div>
                             
@@ -188,23 +219,22 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Libellé de la question</label>
-                                <input type="text"  wire:model.defer="quizz_questions.{{ $index }}.texte" class="form-control" placeholder="Tape ici la question..." value="{{ $question['text'] ?? '' }}" required>
+                                <input type="text"  wire:model.defer="quizz_questions.{{ $index }}.texte" class="form-control" placeholder="Tape ici la question..." required>
                                 @error('quizz_questions.0.texte') <small class="text-danger">{{ $message }}</small> @enderror
                             </div>
 
-                            {{-- <div class="mb-3">
+                            <div class="mb-3">
                                 <label class="form-label fw-bold text-primary">
                                     🎯 Nombre de points
                                 </label>
                                 <input 
                                     type="number" 
-                                    name="questions[{{ $index }}][points]" 
+                                    wire:model.defer="quizz_questions.{{ $index }}.points" 
                                     class="form-control border-primary shadow-sm" 
-                                    value="{{ $question['points'] ?? '' }}" 
                                     placeholder="Ex : 5"
                                     required
                                 >
-                            </div> --}}
+                            </div>
 
                             <div class="mb-2">
                                 <label class="form-label fw-bold text-primary"> 💡 Propositions (optionnel) </label>
@@ -225,6 +255,20 @@
                                         <input  id="question_{{ $index }}_prop{{ $i }}"  type="text"  wire:model.defer="quizz_questions.{{ $index }}.reponses.{{ $i }}.texte" class="form-control me-3 border-info shadow-sm" placeholder="Réponse possible ... {{ $i }}">
                                         {{-- Bouton de suppression de la proposition --}}
                                         <button  type="button"  wire:click="removeProposition({{ $index }}, {{ $i }})"  class="btn btn-outline-danger disabled" > 🗑 </button>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold text-primary">
+                                            🎯 Nombre de points
+                                        </label>
+                                        <input 
+                                            type="number" 
+                                            wire:model.defer="quizz_questions.{{ $index }}.reponses.{{ $i }}.points" 
+                                            class="form-control border-primary shadow-sm" 
+                                            placeholder="Ex : 5"
+                                            required
+                                        >
+                                        @error('quizz_questions.{{ $index }}.points') <small class="text-danger">{{ $message }}</small> @enderror
+
                                     </div>
                                     {{-- Case à cocher pour indiquer la bonne réponse --}}
                                     <div class="form-check form-switch">
@@ -304,6 +348,21 @@
                         
                     </div>
 
+                    <div class="mb-3">
+                        <label class="form-label fw-bold text-primary">
+                            🎯 Nombre de points
+                        </label>
+                        <input 
+                            type="number" 
+                            wire:model.defer="quizz_questions.{{ $index }}.points" 
+                            class="form-control border-primary shadow-sm" 
+                            placeholder="Ex : 5"
+                            required
+                        >
+                        @error('quizz_questions.{{ $index }}.points') <small class="text-danger">{{ $message }}</small> @enderror
+
+                    </div>
+
                     <div class="mb-2">
                         <label class="form-label fw-bold text-primary"> 💡 Propositions (optionnel) </label>
                     </div>
@@ -324,6 +383,20 @@
                                 {{-- Bouton de suppression de la proposition --}}
                                 <button  type="button"  wire:click="removeProposition({{ $index }}, {{ $i }})"  class="btn btn-outline-danger" > 🗑 </button>
                             </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold text-primary">
+                                    🎯 Nombre de points
+                                </label>
+                                <input 
+                                    type="number" 
+                                    wire:model.defer="quizz_questions.{{ $index }}.reponses.{{ $i }}.points" 
+                                    class="form-control border-primary shadow-sm" 
+                                    placeholder="Ex : 5"
+                                    required
+                                >
+                                @error('quizz_questions.{{ $index }}.points') <small class="text-danger">{{ $message }}</small> @enderror
+
+                            </div>
                             {{-- Case à cocher pour indiquer la bonne réponse --}}
                             <div class="form-check form-switch">
                                 <input  class="form-check-input custom-checkbox"  type="checkbox"  wire:model.defer="quizz_questions.{{ $index }}.reponses.{{ $i }}.isCorrect" id="correct_quest_{{ $index }}_prop{{ $i }}">
@@ -332,6 +405,7 @@
                             @error('quizz_questions.{{ $index }}.reponses.'. $i.'.texte') <small class="text-danger">{{ $message }}</small> @enderror
                             @error('quizz_questions.{{ $index }}.reponses.'. $i.'.is_correct') <small class="text-danger">{{ $message }}</small> @enderror
                             @error('quizz_questions.{{ $index }}.reponses.'. $i.'.isCorrect') <small class="text-danger">{{ $message }}</small> @enderror
+                            @error('quizz_questions.{{ $index }}.reponses.'. $i.'.points') <small class="text-danger">{{ $message }}</small> @enderror
                             
                         </div>
 

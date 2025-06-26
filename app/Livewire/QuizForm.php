@@ -19,10 +19,9 @@ class QuizForm extends Component
     public $quizz_type = "educatif";
     public $quizz_passing_score = 0;
     public $quizz_nombre_question = 1 ;
-    public $quizz_questions = [] ;
+    public $quizz_questions = [  ] ;
     public $reward_to_add = [] ;
     
-
     public $successMessage = Null ;
 
     private QuizService $quizzService;
@@ -54,6 +53,15 @@ class QuizForm extends Component
                 return; // on stoppe ici pour éviter d’aller plus loin
             }
             $this->quizz_postId = $postId;
+            $this->quizz_questions[] = ['reponses' => [null]
+                                    // [0 => [
+                                    //         'texte' => '',        // ou 'value' => '', etc.
+                                    //         'is_correct' => false // ou tout autre champ que tu utilises
+                                    //     ]
+                                    // ]
+                                    ];
+                           
+            
 
             $this->post = $this->getPost();
             if(!is_null($this->post['quizz'] )){
@@ -68,6 +76,7 @@ class QuizForm extends Component
 
     public function addPropositions($id)
     {
+      
         if (count($this->quizz_questions[$id]["reponses"]) >= 5) {
             $this->addError('propositions', 'Tu ne peux pas ajouter plus de 5 propositions.');
             return;
@@ -156,8 +165,7 @@ class QuizForm extends Component
             } else {
                 $response = $quizzService->create($data) ; 
             }
-            
-         
+          
             if (isset($response['errors'])) {
                 $this->addError('general_erreur', '<p>Une erreur est survenue</p>');
                 foreach ($response['errors'] as $field => $messages) {

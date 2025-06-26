@@ -99,9 +99,7 @@
         <div class="mb-4">
             <label class="form-label fw-bold text-secondary">🧠 Questions (il est important de renseigner au moins une question )</label>
             @if(empty($quizz_questions))
-                @php
-                    $quizz_questions[0] = ['reponses' => collect([null]) ];
-                @endphp
+               
                 <div class="card rounded-3 border-0 bg-white">
                     <div class="card-body">
                         

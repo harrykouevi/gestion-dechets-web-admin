@@ -21,7 +21,7 @@ class QuizForm extends Component
     public $quizz_nombre_question = 1 ;
     public $quizz_questions = [] ;
     public $reward_to_add = [] ;
-    
+    public $requestontheway = false ;
     public $successMessage = Null ;
 
     private QuizService $quizzService;
@@ -61,7 +61,7 @@ class QuizForm extends Component
         }
 
         $this->quizz_postId = $postId;
-        $this->quizz_questions[] = ['reponses' => [["isCorrect" => false , 'points' => 0]]];
+        $this->addQuestion() ;
         $this->post = $this->getPost();
 
         if (!is_null($this->post['quizz'])) {
@@ -90,7 +90,7 @@ class QuizForm extends Component
             return;
         }
 
-        $this->quizz_questions[] =  ["reponses"  => [['isCorrect' => false , 'points' => 0]]];
+        $this->quizz_questions[] =  ["reponses"  => [['isCorrect' => false , 'points' => 0]],'points' => 0];
     }
 
     public function addPropositions($id)
@@ -147,18 +147,16 @@ class QuizForm extends Component
     public function saveQuiz()
     {
         $this->resetErrorBag();
-    
         $data_v = $this->validate([
                 'quizz_postId' => 'required',
                 'quizz_titre' => 'required|string|max:255',
                 'quizz_passing_score' => 'required',
                 'quizz_nombre_question' => 'required',
-                // 'quizz_type' => 'required|string',
-                'quizz_type' => 'required',
+                'quizz_type' => 'required|string',
                 'quizz_questions'=> 'required|array|min:1',
                 'quizz_questions.*.type'=> 'required|string',
                 'quizz_questions.*.texte'=> 'required|string',
-                'quizz_questions.*.points'=> 'required',
+                'quizz_questions.*.points'=> 'required|integer',
                 'quizz_questions.*.reponses'=> 'array',
                 'quizz_questions.*.reponses.*.points'=> 'required',
 
@@ -192,7 +190,7 @@ class QuizForm extends Component
             $response = $this->quizzId
                 ? app(QuizService::class)->update($this->quizzId, $data)
                 : app(QuizService::class)->create($data);
-            
+            $this->requestontheway = false ;
             if (isset($response['errors'])) {
                 $this->handleErrors($response['errors']);
             } elseif (isset($response['success']) && $response['success']) {
@@ -205,6 +203,7 @@ class QuizForm extends Component
             }
           
         }catch (\Exception $e) {
+            $this->requestontheway = false ;
             $this->addError('general', 'Erreur : ' . $e->getMessage());
         }
             
@@ -215,18 +214,18 @@ class QuizForm extends Component
        
         $this->resetErrorBag();
         $questionService = app(QuestionService::class);
-
+       
         $validated = $this->validate([
                 
-                'quizz_questions.'.$index.'.type'=> 'required|string',
-                'quizz_questions.'.$index.'.texte'=> 'required|string',
-                'quizz_questions.'.$index.'.points'=> 'required',
-                'quizz_questions.'.$index.'.reponses'=> 'array',
-                'quizz_questions.'.$index.'.reponses.*.points'=> 'required',
+            'quizz_questions.'.$index.'.type'=> 'required|string',
+            'quizz_questions.'.$index.'.texte'=> 'required|string',
+            'quizz_questions.'.$index.'.points'=> 'required',
+            'quizz_questions.'.$index.'.reponses'=> 'array',
+            'quizz_questions.'.$index.'.reponses.*.points'=> 'required|integer',
 
-                // 'quizz_questions.'.$index.'.reponses.*.texte'=> 'required|string',
-                // 'quizz_questions.*.reponses.*.isCorrect'=> 'nullable|boolean',
-            ]); // Validation abrégée ici pour clarté
+            'quizz_questions.'.$index.'.reponses.*.texte'=> 'required|string',
+            'quizz_questions.'.$index.'.reponses.*.isCorrect'=> 'nullable|boolean',
+        ]); // Validation abrégée ici pour clarté
             
         $validated = $validated['quizz_questions'][$index];
         $validated['quizz_id'] = $this->quizzId ;
@@ -241,6 +240,7 @@ class QuizForm extends Component
             $response = (isset($this->quizz_questions[$index]['id']) && $this->quizz_questions[$index]['id'] )
                 ? app(QuestionService::class)->update( $this->quizz_questions[$index]['id'] , $validated)
                 : app(QuestionService::class)->create($validated);
+            $this->requestontheway = false ;
 
             if (isset($response['errors'])) {
                 $this->handleErrors($response['errors']);
@@ -248,11 +248,12 @@ class QuizForm extends Component
                 $this->successMessage = 'Opération réussie !';
                 session()->flash('success', $this->successMessage);
 
-                if (!$this->quizz_questions[$index]['id']) {
+                if (!isset($this->quizz_questions[$index]['id'])) {
                     return redirect()->route('quizzes.edit', ['id' => $this->quizzId]);
                 }
             }
         } catch (\Exception $e) {
+            $this->requestontheway = false ;
             $this->addError('general', 'Erreur : ' . $e->getMessage());
         }   
     }

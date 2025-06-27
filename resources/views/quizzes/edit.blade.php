@@ -272,11 +272,12 @@
             initSummernoteWhenReady(summernote);
 
             document.addEventListener('submit', function (e) {
+                
                 const form = e.target;
 
                 if (form.hasAttribute('question-form-attached')) {
                     e.preventDefault();
-
+                    
                     const index = form.id.replace('QuizQuestionsForm', '');
                     const componentEl = form.closest('[wire\\:id]');
                     const component = Livewire.find(componentEl.getAttribute('wire:id'));
@@ -285,7 +286,26 @@
                         alert('Composant Livewire non prêt');
                         return;
                     }
-                    component.call('saveQuestion', index);
+
+                    //  Gestion bouton de chargement
+                    const submitBtn = form.querySelector('#saveButton');
+                    const defaultLabel = submitBtn.querySelector('.default-label');
+                    const loadingLabel = submitBtn.querySelector('.loading-label');
+                    
+                    component.set('requestontheway', true)
+                    submitBtn.disabled = true;
+                    defaultLabel.classList.add('d-none');
+                    loadingLabel.classList.remove('d-none');
+
+                    component.call('saveQuestion', index).then(() => {
+                        // Réactiver le bouton après l'opération
+                        const status = component.get('requestontheway');
+                        if(status == false){
+                            submitBtn.disabled = false;
+                            defaultLabel.classList.remove('d-none');
+                            loadingLabel.classList.add('d-none');
+                        }
+                    });
                 }
 
                 if(form?.id == "QuizForm"){
@@ -297,13 +317,32 @@
                         alert('Composant Livewire non encore prêt.');
                         return;
                     }
+
+
+                    // Gestion bouton de chargement
+                    const submitBtn = form.querySelector('#saveButton');
+                    const defaultLabel = submitBtn.querySelector('.default-label');
+                    const loadingLabel = submitBtn.querySelector('.loading-label');
+                    
+                    component.set('requestontheway', true)
+                    submitBtn.disabled = true;
+                    defaultLabel.classList.add('d-none');
+                    loadingLabel.classList.remove('d-none');
                     
                     // const submitBtn = document.querySelector('saveButton');
                     // submitBtn.disabled = true;
                     let contents = summernote.summernote('code');
                     component.set('quizz_description', contents).then(
                         () => {
-                            component.call('saveQuiz')
+                            component.call('saveQuiz').then(() => {
+                                // Réactiver le bouton après l'opération
+                                const status = component.get('requestontheway');
+                                if(status == false){
+                                    submitBtn.disabled = false;
+                                    defaultLabel.classList.remove('d-none');
+                                    loadingLabel.classList.add('d-none');
+                                }
+                            });
                         }
                     );
                 }

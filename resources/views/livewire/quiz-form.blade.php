@@ -120,7 +120,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Libellé de la question</label>
-                                <input type="text"  wire:model="quizz_questions.0.texte" class="form-control" placeholder="Tape ici la question..." value="{{ $question['text'] ?? '' }}" required>
+                                <input type="text"  wire:model="quizz_questions.0.texte" class="form-control" placeholder="Tape ici la question..." value="{{ $question['text'] ?? '' }}" >
                                 @error('quizz_questions.0.texte') <small class="text-danger">{{ $message }}</small> @enderror
                             </div>
 
@@ -217,7 +217,7 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Libellé de la question</label>
-                                <input type="text"  wire:model="quizz_questions.{{ $index }}.texte" class="form-control" placeholder="Tape ici la question..." required>
+                                <input type="text"  wire:model="quizz_questions.{{ $index }}.texte" class="form-control" placeholder="Tape ici la question..." >
                                 @error('quizz_questions.0.texte') <small class="text-danger">{{ $message }}</small> @enderror
                             </div>
 
@@ -263,7 +263,7 @@
                                             wire:model.lazy="quizz_questions.{{ $index }}.reponses.{{ $i }}.points" 
                                             class="form-control border-primary shadow-sm" 
                                             placeholder="Ex : 5"
-                                            required
+                                            
                                         >
                                         @error('quizz_questions.{{ $index }}.points') <small class="text-danger">{{ $message }}</small> @enderror
 
@@ -295,8 +295,13 @@
 
         {{-- Bouton submit --}}
         <div class="mb-4">
-            <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 shadow">
-                {{ isset($quizzId) && !is_null($quizzId) ? '💾 Mettre à jour le Quiz' : '🚀 Enrégistrer le Quiz' }}
+            <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 shadow" id="saveButton">
+                <span class="default-label">
+                    {{ isset($quizzId) && !is_null($quizzId) ? '💾 Mettre à jour le Quiz' : '🚀 Enrégistrer le Quiz' }}
+                </span>
+                <span class="loading-label d-none">
+                    ⏳ Enregistrement…
+                </span>
             </button>
             @if( isset($quizzId) && !is_null($quizzId))
             
@@ -317,14 +322,14 @@
 
       
         @foreach($quizz_questions as $index => $question)
-        <form  id="QuizQuestionsForm{{ $index }}" question-form-attached="true" >
-            @csrf
+        
 
             <div class="card rounded-3 border-0 bg-white">
                 <div class="card-body">
-                    
+                    <form  id="QuizQuestionsForm{{ $index }}" question-form-attached="true" >
+                    @csrf
                     <div class=" p-4 rounded shadow-sm border bg-light-subtle">
-                        <input type="hidden"  wire:model="quizz_questions.{{ $index }}.id" class="form-control" placeholder="Tape ici la question..." value="{{ $question['text'] ?? '' }}" required>
+                        <input type="hidden"  wire:model="quizz_questions.{{ $index }}.id" class="form-control" placeholder="Tape ici la question..." value="{{ $question['text'] ?? '' }}" >
                         
                         <div class="mb-3">
                             <label for="post_id" class="form-label fw-bold text-secondary">
@@ -335,14 +340,14 @@
                                 <option selected value="single_choice">Question à choix unique</option>
                                 <option  value="multiple_choice">Uestion à choix multiple</option>
                             </select>
-                            @error('quizz_questions.{{ $index }}.type') <small class="text-danger">{{ $message }}</small> @enderror
+                            @error('quizz_questions.'.$index.'.type') <small class="text-danger">{{ $message }}</small> @enderror
 
                         </div>
 
                         <div class="mb-3">
                             <label class="form-label">Libellé de la question</label>
-                            <input type="text"  wire:model="quizz_questions.{{ $index }}.texte" class="form-control" placeholder="Tape ici la question..." value="{{ $question['text'] ?? '' }}" required>
-                            @error('quizz_questions.{{ $index }}.texte') <small class="text-danger">{{ $message }}</small> @enderror
+                            <input type="text"  wire:model="quizz_questions.{{ $index }}.texte" class="form-control" placeholder="Tape ici la question..." value="{{ $question['text'] ?? '' }}" >
+                            @error('quizz_questions.'.$index.'.texte') <small class="text-danger">{{ $message }}</small> @enderror
                             
                         </div>
 
@@ -390,9 +395,9 @@
                                         wire:model.lazy="quizz_questions.{{ $index }}.reponses.{{ $i }}.points" 
                                         class="form-control border-primary shadow-sm" 
                                         placeholder="Ex : 5"
-                                        required
+                                        
                                     >
-                                    @error('quizz_questions.{{ $index }}.points') <small class="text-danger">{{ $message }}</small> @enderror
+                                    @error('quizz_questions.'.$index.'.points') <small class="text-danger">{{ $message }}</small> @enderror
 
                                 </div>
                                 {{-- Case à cocher pour indiquer la bonne réponse --}}
@@ -400,10 +405,10 @@
                                     <input  class="form-check-input custom-checkbox"  type="checkbox"  wire:model="quizz_questions.{{ $index }}.reponses.{{ $i }}.isCorrect" id="correct_quest_{{ $index }}_prop{{ $i }}">
                                     <label class="form-check-label fw-semibold" for="correct_quest_{{ $index }}_prop{{ $i }}"> Bonne réponse </label>
                                 </div>
-                                @error('quizz_questions.{{ $index }}.reponses.'. $i.'.texte') <small class="text-danger">{{ $message }}</small> @enderror
-                                @error('quizz_questions.{{ $index }}.reponses.'. $i.'.is_correct') <small class="text-danger">{{ $message }}</small> @enderror
-                                @error('quizz_questions.{{ $index }}.reponses.'. $i.'.isCorrect') <small class="text-danger">{{ $message }}</small> @enderror
-                                @error('quizz_questions.{{ $index }}.reponses.'. $i.'.points') <small class="text-danger">{{ $message }}</small> @enderror
+                                @error('quizz_questions.'.$index .'.reponses.'. $i.'.texte') <small class="text-danger">{{ $message }}</small> @enderror
+                                @error('quizz_questions.'.$index .'.reponses.'. $i.'.is_correct') <small class="text-danger">{{ $message }}</small> @enderror
+                                @error('quizz_questions.'.$index .'.reponses.'. $i.'.isCorrect') <small class="text-danger">{{ $message }}</small> @enderror
+                                @error('quizz_questions.'.$index .'.reponses.'. $i.'.points') <small class="text-danger">{{ $message }}</small> @enderror
                                 
                             </div>
 
@@ -415,15 +420,22 @@
 
                         <div class="mb-4">
                             <div class="text-end">
-                                <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 shadow ">
-                                    {{ isset($question['id']) ? '💾 Mettre à jour une question' : '💾  Enrégistrer une question' }}
+                                <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 shadow " id="saveButton">
+                                    <span class="default-label">
+                                         {{ isset($question['id']) ? '💾 Mettre à jour une question' : '💾  Enrégistrer une question' }}
+                                    </span>
+                                    <span class="loading-label d-none">
+                                        ⏳ Enregistrement…
+                                    </span>
+                                    
                                 </button>
                             </div>
                         </div>
                     </div>
+                    </form>  
                 </div>
             </div>
-        </form>  
+        
         @endforeach
         
         @if($quizz_nombre_question >  count($quizz_questions) )

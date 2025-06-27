@@ -271,74 +271,44 @@
             let summernote = $('textarea#description');
             initSummernoteWhenReady(summernote);
 
-            // Attente que Livewire + component soient prêts
-            // document.getElementById('QuizForm').addEventListener('submit', function (e) {
-            //     e.preventDefault();
+            document.addEventListener('submit', function (e) {
+                const form = e.target;
 
-            //     const componentEl = document.querySelector('[wire\\:id]');
-            //     const component = Livewire.find(componentEl.getAttribute('wire:id'));
-            //     if (!component) {
-            //         alert('Composant Livewire non encore prêt.');
-            //         return;
-            //     }
-                
-            //     // const submitBtn = document.querySelector('saveButton');
-            //     // submitBtn.disabled = true;
-            //     let contents = summernote.summernote('code');
-            //     component.set('quizz_description', contents).then(
-            //             () => {
-            //                 component.call('saveQuiz')
-                         
-            //             }
-            //         );
-            // });
+                if (form.hasAttribute('question-form-attached')) {
+                    e.preventDefault();
 
-         
+                    const index = form.id.replace('QuizQuestionsForm', '');
+                    const componentEl = form.closest('[wire\\:id]');
+                    const component = Livewire.find(componentEl.getAttribute('wire:id'));
 
-            document.querySelectorAll('button[type="submit"]').forEach(button => {
-                button.addEventListener('click', function (e) {
-                    
-                    const form = this.closest('form'); // Récupère le formulaire parent
-                    
-                    if (form.hasAttribute('question-form-attached')) {
-                        form.addEventListener('submit', function (e) {
-                            e.preventDefault();
-                            const componentEl = document.querySelector('[wire\\:id]');
-                            const component = Livewire.find(componentEl.getAttribute('wire:id'));
-                            if (!component) {
-                                alert('Composant Livewire non encore prêt.');
-                                return;
-                            }
-                            const str = form?.id;
-                            const num = str.replace("QuizQuestionsForm", "");
-                            component.call('saveQuestion', num)
-                        });
+                    if (!component) {
+                        alert('Composant Livewire non prêt');
+                        return;
                     }
+                    component.call('saveQuestion', index);
+                }
 
-                    if(form?.id == "QuizForm"){
-                        form.addEventListener('submit', function (e) {
-                            e.preventDefault();
+                if(form?.id == "QuizForm"){
+                    e.preventDefault();
 
-                            const componentEl = document.querySelector('[wire\\:id]');
-                            const component = Livewire.find(componentEl.getAttribute('wire:id'));
-                            if (!component) {
-                                alert('Composant Livewire non encore prêt.');
-                                return;
-                            }
-                            
-                            // const submitBtn = document.querySelector('saveButton');
-                            // submitBtn.disabled = true;
-                            let contents = summernote.summernote('code');
-                            component.set('quizz_description', contents).then(
-                                    () => {
-                                        component.call('saveQuiz')
-                                    }
-                                );
-                        });
-
+                    const componentEl = document.querySelector('[wire\\:id]');
+                    const component = Livewire.find(componentEl.getAttribute('wire:id'));
+                    if (!component) {
+                        alert('Composant Livewire non encore prêt.');
+                        return;
                     }
-                });
+                    
+                    // const submitBtn = document.querySelector('saveButton');
+                    // submitBtn.disabled = true;
+                    let contents = summernote.summernote('code');
+                    component.set('quizz_description', contents).then(
+                        () => {
+                            component.call('saveQuiz')
+                        }
+                    );
+                }
             });
+
         }
     );
 

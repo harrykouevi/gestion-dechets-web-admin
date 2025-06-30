@@ -110,7 +110,7 @@
                                 <option value="">Type</option>
                                 <option value="image">Image</option>
                             </select>
-                            <button type="button" class="btn btn-sm btn-danger " wire:click.prevent="removeMedia({{ $index }})">✖</button>
+                            <button type="button" class="btn btn-sm btn-danger " >✖</button>
                         </div>
                         @error("post_medias.$index.file") <small class="text-danger">{{ $message }}</small> @enderror
                         @error("post_medias.$index.type") <small class="text-danger">{{ $message }}</small> @enderror

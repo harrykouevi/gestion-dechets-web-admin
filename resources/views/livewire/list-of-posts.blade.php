@@ -81,7 +81,6 @@
                                     <th>Extrait</th>
                                     <th>Quiz lié</th>
                                     <th>Visibilité</th>
-                                    <th>Nombre de vues</th>
                                     <th>Date de création</th>
 
                                     <th>Actions</th>
@@ -112,7 +111,6 @@
                                         @endif
                                     </td>
                                     
-                                    <td>0</td>
                                     <td>{{ array_key_exists("createdAt", $data ) ? \Carbon\Carbon::parse( $data['createdAt'])->format('d M Y') : '2025-05-13' }}</td>
                                     <td>
                                         

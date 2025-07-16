@@ -8,9 +8,8 @@ class QuizController extends Controller
 {
     public function index()
     {
-        $selectedQuiz = Null ;
-        $datas = [[1],[2],[3]] ;
-         return view('quizzes.list',compact('datas','selectedQuiz')); 
+       
+        return view('quizzes.list'); 
     }
 
     public function create(Request $request)
@@ -23,5 +22,10 @@ class QuizController extends Controller
     public function edit($id)
     {
         return view('quizzes.edit',compact('id')); 
+    }
+
+    public function rewards($id)
+    {
+        return view('quizzes.rewards',compact('id')); 
     }
 }

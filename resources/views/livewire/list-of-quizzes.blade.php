@@ -1,14 +1,7 @@
 <div>
-    <div  class="@if ($selectedPost) d-none @else row mb-4 @endif">
-        <!-- Bouton Ajouter -->
-        <div class="col-md-12 d-flex justify-content-end">
-            <a href="{{ route('posts.create') }}" class="btn btn-success">
-                + Ajouter un nouveau post
-            </a>
-        </div>
-    </div>
+    
 
-    <div class="@if ($selectedPost) d-none @else row mb-4 @endif">
+    <div class="@if ($selectedQuiz) d-none @else row mb-4 @endif">
         <!-- Content Row -->
         <div class="col-md-12">
             <div class="card mb-4">
@@ -78,10 +71,10 @@
                                 <tr>
                                     {{-- <th>#</th> --}}
                                     <th>Titre</th>
-                                    <th>Extrait</th>
-                                    <th>Quiz lié</th>
-                                    <th>Visibilité</th>
-                                    <th>Nombre de vues</th>
+                                    <th>Post lié</th>
+                                    <th>Nombre de tentatives</th>
+                                    <th>Taux de réussite</th>
+                                    <th>Moyenne de score</th>
                                     <th>Date de création</th>
 
                                     <th>Actions</th>
@@ -92,35 +85,25 @@
                                 <tr>
                                     {{-- <td>{{ array_key_exists("id", $data ) ?  $data['id'] : 1}}</td> --}}
                                     <td>{{ array_key_exists("titre", $data ) ?  $data['titre'] : 'titre' }}</td>
-                                    <td>{{ array_key_exists("content", $data ) ? Str::limit(strip_tags($data['content']), 60) : '...' }}</td>
                                     <td>
-                                        @if(array_key_exists("quizz", $data ) &&  !is_null($data["quizz"]))
-                                        <a href="{{ route('quizzes.edit',['id'=>$data["quizz"]['id']]) }}" class="text-bold text-dark">{{ Str::limit(  $data["quizz"]['titre'], 60)}}</a>
-                                        @else
-                                        ❌ Aucun
-                                        @endif
+                                        <a href="{{ route('posts.edit',['id'=>$data["postId"]]) }}" class="text-bold text-dark">voir le Post</a>
+
                                     </td>
-                                    <td>
-                                        @if(array_key_exists("visibility", $data ))
-                                            @if ($data['visibility'] == 'public')
-                                                <span class="badge bg-success">Public</span>
-                                            @else
-                                                <span class="badge bg-secondary">Privé</span>
-                                            @endif
-                                        @else
-                                            <span class="badge bg-success">Public</span>
-                                        @endif
-                                    </td>
+                                
                                     
-                                    <td>0</td>
+                                    <td> 10</td>
+                                    <td> 70 % </td>
+                                    <td> 7 </td>
                                     <td>{{ array_key_exists("createdAt", $data ) ? \Carbon\Carbon::parse( $data['createdAt'])->format('d M Y') : '2025-05-13' }}</td>
                                     <td>
                                         
-                                        <a href="{{ route('posts.edit',  $data['id']) }}" class="btn btn-sm btn-warning">✏️ Modifier</a>
-                                      
+                                        {{-- <a href="{{ route('quizzes.edit',  $data['id']) }}" class="btn btn-sm btn-info"> Statistique détaillés</a> --}}
+                                        <a href="{{ route('rewards.create',['quizId'=>$data['id']]) }}" class="btn btn-sm btn-success   shadow ">🚀 Ajouter une récompenses</a>
+                                        <a href="{{ route('quizzes.edit', ['id'=> $data['id']]  ) }}" class="btn btn-sm btn-warning">✏️ Modifier</a>
+                
                                         <button class="btn btn-sm btn-danger open-delete-modal" data-id="{{ $data['id'] }}">
-                                            🗑️ Supprimer
-                                        </button>
+                                                🗑️ Supprimer
+                                            </button>
 
                                     </td>
                                 </tr>
@@ -146,7 +129,7 @@
                     Voulez-vous vraiment supprimer ce post ?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary"  data-dismiss="modal" wire:click="$set('postIdToDelete', null)">Annuler</button>
+                    <button type="button" class="btn btn-secondary"  data-dismiss="modal" wire:click="$set('quizIdToDelete', null)">Annuler</button>
 
                     <button wire:click="delete()" class="btn btn-danger" data-bs-dismiss="modal">
                         Confirmer la suppression

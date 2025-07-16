@@ -8,12 +8,12 @@ use Illuminate\Support\Collection ;
 
 use function PHPUnit\Framework\isNull;
 
-class QuizService
+class RewardService
 {
     use ServiceTrait;
 
     /**
-     * Récupère la liste paginée des posts avec ou sans relations.
+     * Récupère la liste paginée des recompenses avec ou sans relations.
      *
      * @param array|null $relation Relations à charger avec chaque post
      * @param int|null $perPage Nombre d'éléments par page
@@ -34,13 +34,12 @@ class QuizService
 
         $response = Http::withToken(session('token'))
             ->withHeaders(['Accept' => 'application/json'])
-            ->get(env('API_SERVICE_URL') . '/api/blogs/quizz', $params);
-
+            ->get(env('API_SERVICE_URL') . '/api/rewards/quizz/get', $params);
         if ($response->successful()) {
             return collect($response->json()['data']);
         }
 
-        throw new \Exception('Erreur lors de la récupération des posts');
+        throw new \Exception('Erreur lors de la récupération des recompenses');
     }
 
     /**
@@ -61,7 +60,7 @@ class QuizService
 
         $response = Http::withToken(session('token'))
             ->withHeaders(['Accept' => 'application/json'])
-            ->get(env('API_SERVICE_URL') . '/api/blogs/quizz/' . $id, $params);
+            ->get(env('API_SERVICE_URL') . '/api/rewards/quizz/get/' . $id, $params);
 
         if ($response->successful()) {
             return $response->json()['data'];
@@ -100,7 +99,7 @@ class QuizService
             return collect($response->json()['data']);
         }
 
-        throw new \Exception('Erreur lors de la récupération des posts');
+        throw new \Exception('Erreur lors de la récupération des recompenses');
     }
 
     
@@ -111,16 +110,21 @@ class QuizService
      * @param array $data Données du post
      * @return mixed
      */
-    public function create(array $data)
+    public function create(array $data , $mediaFiles = null)
     {
         $data['admin_id'] = session('user')['id'];
 
+        $http = Http::withToken(session('token'))
+          ->asMultipart() // Nécessaire pour les fichiers
+                    ->withHeaders(['Accept' => 'application/json']);
+        
+        if (!empty($mediaFiles)) {
+                $http = $this->attachFileToHttp($http, "image_file", $mediaFiles);
+        }
         // Si le type du post est éducatif, utiliser une URL spécifique
-        $url = "/api/blogs/quizz/create";
+        $url = "/api/rewards/quizz/create";
 
-        $response = Http::withToken(session('token'))
-            ->withHeaders(['Accept' => 'application/json'])
-            ->post(env('API_SERVICE_URL') . $url, $data);
+        $response = $http->post(env('API_SERVICE_URL') . $url, $data);
 
         return $this->render($response);
     }
@@ -138,7 +142,7 @@ class QuizService
 
         $response = Http::withToken(session('token'))
             ->withHeaders(['Accept' => 'application/json'])
-            ->patch(env('API_SERVICE_URL') . "/api/blogs/quizz/update/" . $id, $data);
+            ->patch(env('API_SERVICE_URL') . "/api/rewards/quizz/update/" . $id, $data);
 
         return $this->render($response);
     }
@@ -153,7 +157,7 @@ class QuizService
     {
         $response = Http::withToken(session('token'))
             ->withHeaders(['Accept' => 'application/json'])
-            ->delete(env('API_SERVICE_URL') . "/api/blogs/quizz/delete/" . $id);
+            ->delete(env('API_SERVICE_URL') . "/api/rewards/quizz/delete/" . $id);
 
         return $this->render($response);
     }

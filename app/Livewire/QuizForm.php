@@ -171,6 +171,8 @@ class QuizForm extends Component
         );
 
         $data = [
+            'niveau' => "facile",
+
             'titre' => $data_v['quizz_titre'],
             'passing_score' => $data_v['quizz_passing_score'],
             'nombre_question' => $data_v['quizz_nombre_question'],

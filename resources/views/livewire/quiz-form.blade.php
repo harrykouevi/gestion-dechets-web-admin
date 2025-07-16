@@ -94,7 +94,7 @@
                 </div>
             @endforeach
             <button type="button" wire:click.prevent="addReward" class="btn btn-sm btn-outline-secondary">+ Ajouter une récompense</button>
-        </div> --}}
+        </div>  --}}
         @if( is_null($quizzId) )
         <div class="mb-4">
             <label class="form-label fw-bold text-secondary">🧠 Questions (il est important de renseigner au moins une question )</label>
@@ -304,10 +304,10 @@
                 </span>
             </button>
             @if( isset($quizzId) && !is_null($quizzId))
-            
-                <button  class="btn btn-success rounded-pill px-5 py-2 shadow " wire:loading.attr="disabled">
-                    🚀 Lancer le Quiz
-                </button>
+
+                
+                <a href="{{ route('rewards.create',['quizId'=>$quizzId]) }}" class="btn btn-success rounded-pill px-5 py-2 shadow ">🚀 Ajouter une récompenses</a>
+                                      
             
             @endif
         </div>

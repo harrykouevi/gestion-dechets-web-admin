@@ -2,15 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\StatService;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $selectedPost = Null ;
-        $datas = [[1],[2],[3]] ;
-        return view('posts.list',compact('datas','selectedPost')); 
+        if($request->has('report') && $request->input('report') == true ){
+            $posts =  app(StatService::class)->getPostMostRead() ;
+            return view('posts.report'
+                , [
+                            'datas' => $posts,
+                        ]);
+        }
+        return view('posts.list'); 
     }
 
     public function create()

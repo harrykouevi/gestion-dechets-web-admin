@@ -58,7 +58,7 @@
                 <a href="{{ route('posts.index') }}">🗂️ Gestion des posts éducatifs</a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">
-                {{ isset($id) ? '✏️ Modifier un post' : '🎉 Nouveau post' }}
+                {{ isset($id) ? '✏️ Modifier un reward' : '🎉 Nouveau reward' }}
             </li>
         </ol>
     </nav>
@@ -68,7 +68,7 @@
     <div class="mb-4">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="fw-bold text-primary mb-0">
-                {{ isset($id) ? '✏️ Mise à jour de ton Post' : '🎉 Création d’un nouveau Post' }}
+                {{ isset($id) ? '✏️ Mise à jour de ton Reward' : '🎉 Création d’un nouveau Reward' }}
             </h2>
             <a href="{{ route('posts.index') }}" class="btn btn-sm btn-secondary">
                 ← Retour à la liste des posts
@@ -88,7 +88,8 @@
         <div class="card-body p-4">
 
         
-            @livewire('post-form', isset($id) ? ['id' => $id] : [])
+            @livewire('reward-form', isset($id) ? ['id' => $id] : ['quizzId' => $quizId])
+
         </div>
     </div>
     
@@ -140,28 +141,28 @@
     document.addEventListener('livewire:init', 
         function () {
 
-            let summernote = $('textarea#post_content');
+            // let summernote = $('textarea#post_content');
 
-            initSummernoteWhenReady(summernote);
+            // initSummernoteWhenReady(summernote);
            
             document.getElementById('myForm').addEventListener('submit', 
                 function(e) {
-                    e.preventDefault();
+                    // e.preventDefault();
 
-                    const componentEl = document.querySelector('[wire\\:id]');
-                    const component = Livewire.find(componentEl.getAttribute('wire:id'));
-                    if (!component) {
-                        alert('Composant Livewire non encore prêt.');
-                        return;
-                    }
+                    // const componentEl = document.querySelector('[wire\\:id]');
+                    // const component = Livewire.find(componentEl.getAttribute('wire:id'));
+                    // if (!component) {
+                    //     alert('Composant Livewire non encore prêt.');
+                    //     return;
+                    // }
                     // const submitBtn = document.querySelector('saveButton');
                     // submitBtn.disabled = true;
-                    let contents = summernote.summernote('code');
-                    component.set('post_content', contents).then(
-                        () => {
-                            component.call('save')
-                        }
-                    );
+                    // let contents = summernote.summernote('code');
+                    // component.set('post_content', contents).then(
+                    //     () => {
+                    //         component.call('save')
+                    //     }
+                    // );
                 }
             );
         }

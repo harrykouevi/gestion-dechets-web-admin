@@ -1,22 +1,15 @@
 <div>
-    <div  class="@if ($selectedPost) d-none @else row mb-4 @endif">
-        <!-- Bouton Ajouter -->
-        <div class="col-md-12 d-flex justify-content-end">
-            <a href="{{ route('posts.create') }}" class="btn btn-success">
-                + Ajouter un nouveau post
-            </a>
-        </div>
-    </div>
+    
 
-    <div class="@if ($selectedPost) d-none @else row mb-4 @endif">
+    <div class="@if ($selectedRewards) d-none @else row mb-4 @endif">
         <!-- Content Row -->
-        <div class="col-md-12">
+        <div class="col-md-12 d-none">
             <div class="card mb-4">
                     
                 <div class="card-body">
                     <!-- Choix du mode -->
                     
-                        <h1 class="h5 mb-4 text-gray-800">Filtre _______</h1>
+                        <h1 class="h5 mb-4 text-gray-800 ">Filtre _______</h1>
                         <!-- Filtres généraux incidents -->
                         <div class="row g-3"  >
                             <div class="col-md-6">
@@ -77,11 +70,14 @@
                             <thead>
                                 <tr>
                                     {{-- <th>#</th> --}}
-                                    <th>Titre</th>
-                                    <th>Extrait</th>
-                                    <th>Quiz lié</th>
-                                    <th>Visibilité</th>
-                                    <th>Nombre de vues</th>
+                                    <th>#</th>
+                                    <th>Nom</th>
+                                    <th>Description</th>
+                                    <th>Quizzes</th>
+                                    <th>Type</th>
+                                    <th>Valeur</th>
+
+                                    <th>Apercu</th>
                                     <th>Date de création</th>
 
                                     <th>Actions</th>
@@ -90,37 +86,37 @@
                             <tbody>
                                 @foreach($datas as $data)
                                 <tr>
-                                    {{-- <td>{{ array_key_exists("id", $data ) ?  $data['id'] : 1}}</td> --}}
-                                    <td>{{ array_key_exists("titre", $data ) ?  $data['titre'] : 'titre' }}</td>
-                                    <td>{{ array_key_exists("content", $data ) ? Str::limit(strip_tags($data['content']), 60) : '...' }}</td>
+                                    <td>{{ array_key_exists("id", $data ) ?  $data['id'] : 1}}</td>
+                                    <td>{{ array_key_exists("name", $data ) ?  $data['name'] : 'titre' }}</td>
+                                    <td>{{ array_key_exists("description", $data ) ?  $data['description'] : 'description' }}</td>
+                        
                                     <td>
-                                        @if(array_key_exists("quizz", $data ) &&  !is_null($data["quizz"]))
-                                        <a href="{{ route('quizzes.edit',['id'=>$data["quizz"]['id']]) }}" class="text-bold text-dark">{{ Str::limit(  $data["quizz"]['titre'], 60)}}</a>
-                                        @else
-                                        ❌ Aucun
-                                        @endif
-                                    </td>
-                                    <td>
-                                        @if(array_key_exists("visibility", $data ))
-                                            @if ($data['visibility'] == 'public')
-                                                <span class="badge bg-success">Public</span>
-                                            @else
-                                                <span class="badge bg-secondary">Privé</span>
-                                            @endif
-                                        @else
-                                            <span class="badge bg-success">Public</span>
-                                        @endif
+                                        <a href="{{ route('quizzes.edit',['id'=>$data["quizzId"]]) }}" class="text-bold text-dark">voir le quiz</a>
+
                                     </td>
                                     
-                                    <td>0</td>
+                                    <td>{{ array_key_exists("type", $data ) ?  $data['type'] : 'type' }}</td>
+                                    <td>{{ array_key_exists("value", $data ) ?  $data['value'] : 'value' }}</td>
+                                    <td><div class="flex-shrink-0 mr-2">
+                                        @if($data['imageUrl'])
+                                        <img src="{{ $data['imageUrl'] }}"
+                                            alt="media preview"
+                                            class="img-thumbnail shadow-sm"
+                                            style="width: 120px; height: auto;">
+                                        </div>
+                                        @else
+                                        Aucun
+                                        @endif
+                                    </td>
                                     <td>{{ array_key_exists("createdAt", $data ) ? \Carbon\Carbon::parse( $data['createdAt'])->format('d M Y') : '2025-05-13' }}</td>
                                     <td>
                                         
-                                        <a href="{{ route('posts.edit',  $data['id']) }}" class="btn btn-sm btn-warning">✏️ Modifier</a>
+                                        <a href="{{ route('rewards.edit', ['id' => $data['id']]) }}" class="btn btn-sm btn-warning">✏️ Modifier</a>
+                                        {{-- <a href="{{ route('rewards.edit',  $data['id']) }}" class="btn btn-sm btn-info"> Statistique détaillés</a> --}}
                                       
                                         <button class="btn btn-sm btn-danger open-delete-modal" data-id="{{ $data['id'] }}">
-                                            🗑️ Supprimer
-                                        </button>
+                                                🗑️ Supprimer
+                                            </button>
 
                                     </td>
                                 </tr>
@@ -143,10 +139,10 @@
                     <button type="button" id="closeModalLabel" class="btn-close " data-dismiss="modal"  aria-label="Fermer"></button>
                 </div>
                 <div class="modal-body">
-                    Voulez-vous vraiment supprimer ce post ?
+                    Voulez-vous vraiment supprimer cette recompense ?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary"  data-dismiss="modal" wire:click="$set('postIdToDelete', null)">Annuler</button>
+                    <button type="button" class="btn btn-secondary"  data-dismiss="modal" wire:click="$set('quizIdToDelete', null)">Annuler</button>
 
                     <button wire:click="delete()" class="btn btn-danger" data-bs-dismiss="modal">
                         Confirmer la suppression

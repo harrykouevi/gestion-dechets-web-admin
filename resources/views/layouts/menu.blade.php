@@ -60,13 +60,20 @@
         <span>EDU_C</span>
     </a>
     
+
     <div id="collapseCourse" class="collapse" aria-labelledby="headingUtilities"
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Posts éducatifs:</h6>
             <a class="collapse-item" href="{{ route('posts.index') }}">Liste</a>
-                {{-- <h6 class="collapse-header">Quiz:</h6>
-            <a class="collapse-item disabled" href="{{ route('quizzes.index') }}">Liste</a> --}}
+            <h6 class="collapse-header">Quizs:</h6>
+            <a class="collapse-item" href="{{ route('quizzes.index') }}">Liste</a>
+            <h6 class="collapse-header">Récompenses:</h6>
+            <a class="collapse-item" href="{{ route('rewards.index') }}">Liste</a>
+            <h6 class="collapse-header">Statistiques:</h6>
+            <a class="collapse-item" href="{{ route('posts.index', ['report' => true]) }}">Voir</a>
+
         </div>
     </div>
+
 </li>

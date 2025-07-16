@@ -46,10 +46,33 @@
 @endpush
 
 @section('content')
+
+    <!-- Fil d’Ariane -->
+    <nav aria-label="breadcrumb" class="mb-3">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="{{ route('posts.index') }}">🗂️ Gestion des posts éducatifs</a>
+            </li>
+            <li class="breadcrumb-item">
+                <a href="{{ route('quizzes.index') }}">📋 Liste des Quiz</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                {{ isset($id) ? '✏️ Modifier un Quiz' : '🎉 Nouveau Quiz' }}
+            </li>
+        </ol>
+    </nav>
+
+    <!-- Titre principal + bouton retour -->
+    
     <div class="mb-4">
-        <h2 class="fw-bold text-primary">
-            {{ isset($id) ? '✏️ Mise à jour de ton Quiz' : '🎉 Création d’un nouveau Quiz' }}
-        </h2>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold text-primary mb-0">
+                {{ isset($id) ? '✏️ Mise à jour de ton Quiz' : '🎉 Création d’un nouveau Quiz' }}
+            </h2>
+            <a href="{{ route('quizzes.index') }}" class="btn btn-sm btn-secondary">
+                ← Retour à la liste des quiz
+            </a>
+        </div>
         <p class="text-muted">
             En route pour un nouveau défi intellectuel 😎 !<br>
             Complète les champs ci-dessous pour créer un quiz amusant et éducatif.
@@ -66,168 +89,7 @@
         </div>
     </div>
 
-    {{-- <div class="container mt-4">
-        <div class="mb-4">
-            <h2 class="fw-bold text-primary">
-                {{ isset($id) ? '✏️ Mise à jour de ton Quiz' : '🎉 Création d’un nouveau Quiz' }}
-            </h2>
-            <p class="text-muted">
-                En route pour un nouveau défi intellectuel 😎 !<br>
-                Complète les champs ci-dessous pour créer un quiz amusant et éducatif.
-            </p>
-        </div>
-
-        @if (session('success'))
-            <div class="alert alert-success shadow-sm text-success text-center fs-6 fw-semibold">
-                ✅ {{ session('success') }}
-            </div>
-        @endif
-
-        <div class="card border-0 shadow-lg rounded-4 bg-light-subtle">
-            <div class="card-body p-4">
-
-            
-                @if (session('success'))
-                    <div class="alert alert-success mb-4">
-                        {{ session('success') }}
-                    </div>
-                @endif
-
-                
-                <form wire:submit.prevent="save">
-                    @csrf
-                    @error('_mess_') 
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-                    @error('general') 
-                        <span class="text-danger">{{ $message }}</span>
-                    @enderror
-
-                    
-                    <div class="mb-4">
-                        <label for="course_id" class="form-label fw-bold text-secondary">
-                            📘 Choisis le cours concerné
-                        </label>
-                        <select id="course_id" wire:model="course_id" class="form-control shadow-sm rounded-3">
-                            <option value="">-- Sélectionne un cours --</option>
-                            {{-- @foreach($courses as $course)
-                                <option value="{{ $course->id }}">{{ $course->nom }}</option>
-                            @endforeach --}}
-                        {{-- </select>
-                        @error('course_id') <small class="text-danger">{{ $message }}</small> @enderror
-                    </div>
-
-                
-
-                    Titre 
-                    <div class="mb-4">
-                        <label for="titre" class="form-label fw-bold text-secondary">
-                            📝 Titre du Quiz
-                        </label>
-                        <input type="text" id="titre" wire:model="titre" class="form-control rounded-3 shadow-sm" placeholder="Ex: Quiz sur les capitales">
-                        @error('titre') <small class="text-danger">{{ $message }}</small> @enderror
-                    </div>
-
-                    
-                    <div class="mb-4">
-                        <label for="description" class="form-label fw-bold text-secondary">
-                            📄 Description
-                        </label>
-                        <textarea id="description" wire:model="description" class="form-control rounded-3 shadow-sm" rows="3" placeholder="Décris brièvement le but de ce quiz..."></textarea>
-                        @error('description') <small class="text-danger">{{ $message }}</small> @enderror
-                    </div>
-
-                    
-                    <hr class="my-4">
-                    <h4 class="text-success mb-3">🧠 Les Questions</h4>
-
-                    @isset($quiz)
-                        @foreach($quiz['questions'] as $index => $question)
-                        <div class="card mb-4 shadow-sm rounded-3 border-0 bg-white">
-                            <div class="card-body">
-                                <h5 class="mb-3 text-primary">🔹 Question {{ $index + 1 }}</h5>
-
-                                
-
-                                <div class="mb-4 p-4 rounded shadow-sm border bg-light-subtle">
-                                    <div class="mb-3">
-                                        <label class="form-label">Texte</label>
-                                        <input type="text" name="questions[{{ $index }}][text]" class="form-control" placeholder="Tape ici la question..." value="{{ $question['text'] ?? '' }}" required>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold text-primary">
-                                            🎯 Nombre de points
-                                        </label>
-                                        <input 
-                                            type="number" 
-                                            name="questions[{{ $index }}][points]" 
-                                            class="form-control border-primary shadow-sm" 
-                                            value="{{ $question['points'] ?? '' }}" 
-                                            placeholder="Ex : 5"
-                                            required
-                                        >
-                                    </div>
-
-                                    <div class="mb-2">
-                                        <label class="form-label fw-bold text-primary">
-                                            💡 Propositions
-                                        </label>
-                                    </div>
-
-                                    @php
-                                        $propositions = $question['propositions'] ?? collect([null, null]);
-                                    @endphp
-
-                                    @foreach($propositions as $i => $prop)
-                                        <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
-                                            <input 
-                                                type="text" 
-                                                name="questions[{{ $index }}][propositions][{{ $i }}][text]" 
-                                                value="{{ $prop['text'] ?? '' }}" 
-                                                class="form-control me-3 border-info shadow-sm" 
-                                                placeholder="Ex : Réponse possible..." 
-                                                required
-                                            >
-                                           
-
-                                            
-                                            <div class="form-check form-switch">
-                                                <input 
-                                                    class="form-check-input custom-checkbox" 
-                                                    type="checkbox" 
-                                                    name="questions[{{ $index }}][propositions][{{ $i }}][is_correct]" 
-                                                    id="correct_{{ $index }}_{{ $i }}"
-                                                    {{ $prop['is_correct'] ?? false ? 'checked' : '' }}
-                                                >
-                                                <label class="form-check-label fw-semibold" for="correct_{{ $index }}_{{ $i }}">
-                                                    Bonne réponse
-                                                </label>
-                                            </div>
-                                        
-                                        </div>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                        @endforeach
-                    @endisset
-
-                    <div class="mb-4">
-                        <button type="button" class="btn btn-outline-primary rounded-pill px-4" onclick="addQuestion()">
-                            ➕ Ajouter une question
-                        </button>
-                    </div>
-
-                    <div class="text-end">
-                        <button type="submit" class="btn btn-primary rounded-pill px-5 py-2 shadow">
-                            {{ $id ? '💾 Mettre à jour le Quiz' : '🚀 Lancer le Quiz' }}
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div> --}}
+    
 @endsection
 
 

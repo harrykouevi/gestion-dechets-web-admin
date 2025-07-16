@@ -9,19 +9,20 @@
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                <a href="">🏠 Tableau de bord</a>
+                <a href="{{ route('posts.index') }}">🗂️ Gestion des posts éducatifs</a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">
-                🗂️ Gestion des posts éducatifs
+                📋 Liste des recompenses
             </li>
         </ol>
     </nav>
 
+
     <!-- Titre principal + bouton retour -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 text-gray-800 mb-0">🗂️ Gestion des posts éducatifs</h1>
-        <a href="{{ route('dashboard') }}" class="btn btn-sm btn-secondary">
-            ← Retour au tableau de bord
+        <h1 class="h3 text-gray-800 mb-0">📋 Liste des recompenses</h1>
+        <a href="{{ route('posts.index') }}" class="btn btn-sm btn-secondary">
+            ← Retour à la gestion des posts
         </a>
     </div>
     <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
@@ -30,7 +31,7 @@
 
     <!-- Content Row -->
     
-    @livewire('list-of-posts') <!-- Include the Livewire component -->
+    @livewire('list-of-rewards') <!-- Include the Livewire component -->
     
 
   
@@ -49,7 +50,7 @@
                 if (!component) return;
 
                 // ✅ 4. Met à jour la propriété (ceci déclenche le re-render)
-                component.set('postIdToDelete', id).then(() => {
+                component.set('rewardIdToDelete', id).then(() => {
                     // ✅ Ce bloc s'exécute après que Livewire a mis à jour la DOM
                     const modalElement = document.getElementById('confirmDeleteModal');
                     if (modalElement) {
@@ -65,7 +66,7 @@
        
         // let component = Livewire.find(document.querySelector('[wire\\:id]').getAttribute('wire:id'));
         // if (!component) return;
-        // component.set('postIdToDelete', null).then(() => {
+        // component.set('rewardIdToDelete', null).then(() => {
             document.getElementById('closeModalLabel').click();
         // });
     });

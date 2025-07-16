@@ -18,6 +18,8 @@ class PostForm extends Component
     public $post_description;
     public $post_type = "educatif";
     public $post_image;
+    public $post_video_url ;
+
     public $post_medias = []; // Chaque élément : ['file' => UploadedFile, 'type' => string]
     public $medias_to_show = []; // Chaque élément : ['file' => UploadedFile, 'type' => string]
     public $existing_medias_last_index =0 ;
@@ -35,6 +37,8 @@ class PostForm extends Component
             $this->post_content = $post['content'] ;
             $this->post_description = $post['description'] ?? "" ;
             $this->post_type = $post['type'] ;
+            $this->post_video_url = $post['videoUrl'] ?? "" ;
+
             $this->medias_to_show = $post['medias'] ;
             $this->existing_medias_last_index = count($this->medias_to_show) - 1 ;
         }
@@ -45,6 +49,7 @@ class PostForm extends Component
         $this->resetErrorBag();
         $postService = app(PostService::class);
         $data_v = $this->validate([
+                'post_video_url' => 'nullable|string|max:255',
                 'post_titre' => 'required|string|max:255',
                 'post_content' => 'required|string',
                 'post_description' => 'required|string|max:255',
@@ -68,6 +73,7 @@ class PostForm extends Component
                 'titre' => $data_v['post_titre'],
                 'description' => array_key_exists('post_description',$data_v)? $data_v['post_description'] : Null ,
                 'content' => $data_v['post_content'],
+                'video_url' => $data_v['post_video_url'],
                 'type' => $data_v['post_type'],
             ];
             
@@ -81,7 +87,7 @@ class PostForm extends Component
                 $this->addError('general_erreur', '<p>Une erreur est survenue</p>');
                 foreach ($response['errors'] as $field => $messages) {
                     if(is_string($messages)){
-                        foreach (['id','titre', 'content','type','description'] as $needle) {
+                        foreach (['id','titre', 'content','type','description', 'video_url'] as $needle) {
                             if (str_contains($messages, $needle)) {
                                 $this->addError('post_'.$needle, str_replace("Validation Error:", '', $messages));
                             }

@@ -36,7 +36,8 @@ class DashboardController extends Controller
       $quizzSuccessRate = $o['success_rate'] ;
       $quizAttemptCount = !is_string($o['attempts'])? $o['attempts']->sum('total') : $o['attempts'] ;
             // Lancer le job pour charger en fond
-      dispatch(new LoadQuizStats());
+      $job = new LoadQuizStats();
+      $job->handle(app(\App\Services\StatService::class));
             //  dump(Cache::has('quiz_stats'));
             //  dump(Cache::get('quiz_stats'));
             //  dd(Cache::get('quiz_stats_20')) ;

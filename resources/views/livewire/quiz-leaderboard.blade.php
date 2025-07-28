@@ -18,8 +18,8 @@
                         <tr>
                             <td>{{ $index + 1}}</td>
                             <td>{{ array_key_exists("nom", $attempt ) ?  $attempt['nom'].' '.$attempt['prenom'] : 'nom' }}</td>
-                            <td>{{ array_key_exists("quiz_id", $attempt ) ?  $attempt['quiz_id'] : 'quiz' }}</td>
-                            <td><strong>{{ array_key_exists("best_score", $attempt ) ?  $attempt['best_score'] : 'score' }}</strong></td>
+                            <td>{{ array_key_exists("quizz_id", $attempt ) ?  $attempt['quizz_id'] : 'quiz' }}</td>
+                            <td>@if(array_key_exists("best_score", $attempt ))  <strong> <a href="{{ route('quizzes.results.show', ['user' => $attempt['user_id'], 'quiz' => $attempt['quizz_id'] ]) }}"  class="text-bold  text-primary">  {{ $attempt['best_score'] }} </a> </strong> @else 'score' @endif</td>
                         </tr>
                     @empty
                         <tr>

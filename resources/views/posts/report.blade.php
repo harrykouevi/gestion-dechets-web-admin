@@ -69,15 +69,15 @@
                                 @foreach($datas as $data)
                                 <tr>
                                     {{-- <td>{{ array_key_exists("id", $data['post'] ) ?  $data['post']['id'] : 1}}</td> --}}
-                                    <td>{{ array_key_exists("titre", $data['post'] ) ?  $data['post']['titre'] : 'titre' }}</td>
-                                    <td>{{ array_key_exists("content", $data['post'] ) ? Str::limit(strip_tags($data['post']['content']), 60) : '...' }}</td>
+                                    <td>{{ $data['post'] && array_key_exists("titre", $data['post'] ) ?  $data['post']['titre'] : 'titre' }}</td>
+                                    <td>{{ $data['post'] && array_key_exists("content", $data['post'] ) ? Str::limit(strip_tags($data['post']['content']), 60) : '...' }}</td>
                                     
                                     
-                                    <td>{{ array_key_exists("vues", $data ) ?  $data['vues'] : 'vues' }}</td>
-                                    <td>{{ array_key_exists("createdAt", $data['post'] ) ? \Carbon\Carbon::parse( $data['post']['createdAt'])->format('d M Y') : '2025-05-13' }}</td>
+                                    <td>{{ $data['post'] &&  array_key_exists("vues", $data ) ?  $data['vues'] : 'vues' }}</td>
+                                    <td>{{ $data['post'] &&  array_key_exists("createdAt", $data['post'] ) ? \Carbon\Carbon::parse( $data['post']['createdAt'])->format('d M Y') : '2025-05-13' }}</td>
                                     <td>
                                         
-                                        <a href="{{ route('posts.edit',  ['id' => $data['post']['id']]) }}" class="btn btn-sm btn-warning">✏️ Modifier</a>
+                                        <a href="{{ route('posts.edit',  ['id' => $data['post_id']]) }}" class="btn btn-sm btn-warning">✏️ Modifier</a>
                                       
                                     </td>
                                 </tr>

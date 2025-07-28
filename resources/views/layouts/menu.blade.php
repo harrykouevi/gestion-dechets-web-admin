@@ -65,11 +65,10 @@
         data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Posts éducatifs:</h6>
-            <a class="collapse-item" href="{{ route('posts.index') }}">Liste</a>
+            <a class="collapse-item" href="{{ route('posts.index') }}">Les contenus</a>
             <h6 class="collapse-header">Quizs:</h6>
-            <a class="collapse-item" href="{{ route('quizzes.index') }}">Liste</a>
-            <h6 class="collapse-header">Récompenses:</h6>
-            <a class="collapse-item" href="{{ route('rewards.index') }}">Liste</a>
+            <a class="collapse-item" href="{{ route('quizzes.index') }}">Les quiz</a>
+            <a class="collapse-item" href="{{ route('rewards.index') }}">Les récompenses</a>
             <h6 class="collapse-header">Statistiques:</h6>
             <a class="collapse-item" href="{{ route('posts.index', ['report' => true]) }}">Voir</a>
 

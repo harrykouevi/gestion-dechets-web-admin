@@ -25,6 +25,7 @@ class StatService
             ->withHeaders(['Accept' => 'application/json'])
             ->get(env('API_SERVICE_URL') . '/api/statistiques/domicile/count', $params);
 
+            
         if ($response->successful()) {
             return $response->json()['data'];
         }
@@ -89,6 +90,7 @@ class StatService
     public function getPostMostRead() : array
     {
         $params = [];
+         $params['with_relations'] = 'true';
 
         if (!empty($relations)) {
             $params['with_relations'] = 'true';
@@ -113,7 +115,7 @@ class StatService
      * Récupère le taux de reussite aux  quiz.
      *
      * Options possibles :
-     * - quizId (int|null)      : L'ID du quiz concerné
+     * - quizzId (int|null)      : L'ID du quiz concerné
      * - dateDebut (Carbon|null): Date de début pour filtrer les tentatives
      * - dateFin (Carbon|null)  : Date de fin pour filtrer les tentatives
      *
@@ -125,7 +127,7 @@ class StatService
     {
         $params = [];
         // Valeurs par défaut
-        $params['quizId'] = $options['quizId'] ?? null;
+        $params['quizzId'] = $options['quizzId'] ?? null;
         $params['dateDebut'] = $options['dateDebut'] ?? null;
         $params['dateFin'] = $options['dateFin'] ?? null;
 
@@ -144,7 +146,7 @@ class StatService
      * Calcule la moyenne de score au quiz.
      *
      * Options possibles :
-     * - quizId (int|null)      : L'ID du quiz concerné
+     * - quizzId (int|null)      : L'ID du quiz concerné
      * - dateDebut (Carbon|null): Date de début pour filtrer les tentatives
      * - dateFin (Carbon|null)  : Date de fin pour filtrer les tentatives
      *
@@ -156,7 +158,7 @@ class StatService
     {
         $params = [];
         // Valeurs par défaut
-        $params['quizId'] = $options['quizId'] ?? null;
+        $params['quizzId'] = $options['quizzId'] ?? null;
         $params['dateDebut'] = $options['dateDebut'] ?? null;
         $params['dateFin'] = $options['dateFin'] ?? null;
 
@@ -180,7 +182,7 @@ class StatService
      * - dateFin (Carbon|null)  : Date de fin pour filtrer les tentatives
      *
      * @param array $options
-     * @return float|int
+     * @return Array
      * @throws \Exception
      */
     public function getQuizzTopScore(array $options = [])
@@ -192,6 +194,61 @@ class StatService
         $response = Http::withToken(session('token'))
             ->withHeaders(['Accept' => 'application/json'])
             ->get(env('API_SERVICE_URL') . '/api/statistiques/quizz-top-scores', $params);
+
+        if ($response->successful()) {
+            return $response->json()['data'];
+        }
+
+        throw new \Exception('Erreur lors de la récupération du post');
+    }
+
+
+    /**
+     *
+   
+     *
+     * @param array $options
+     * @return array
+     * @throws \Exception
+     */
+    public function getQuizzUserAttemps(array $options = [])
+    {
+        $params = [];
+        // Valeurs par défaut
+        $params['perPage'] = $options['perPage'] ?? null;
+        $params['userId'] = $options['userId'] ?? null;
+        $params['quizzId'] = $options['quizzId'] ?? null;
+
+        $response = Http::withToken(session('token'))
+            ->withHeaders(['Accept' => 'application/json'])
+            ->get(env('API_SERVICE_URL') . '/api/statistiques/user-reponses', $params);
+       
+        if ($response->successful()) {
+            return $response->json()['data'];
+        }
+
+        throw new \Exception('Erreur lors de la récupération du post');
+    }
+
+     /**
+     *
+   
+     *
+     * @param array $options
+     * @return float|int
+     * @throws \Exception
+     */
+    public function getQuizzUserScores(array $options = [])
+    {
+        $params = [];
+        // Valeurs par défaut
+        $params['perPage'] = $options['perPage'] ?? null;
+        $params['userId'] = $options['userId'] ?? null;
+        $params['quizzId'] = $options['quizzId'] ?? null;
+
+        $response = Http::withToken(session('token'))
+            ->withHeaders(['Accept' => 'application/json'])
+            ->get(env('API_SERVICE_URL') . '/api/statistiques/user-results', $params);
 
         if ($response->successful()) {
             return $response->json()['data'];

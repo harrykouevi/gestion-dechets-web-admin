@@ -13,7 +13,8 @@ class QuizLeaderboard extends Component
     public function mount()
     {
         $this->topScores = app(StatService::class)->getQuizzTopScore(); // tu peux adapter le paramètre
-        $this->topScores = collect($this->topScores['data'])->sortByDesc('best_score')->values()->toArray();
+        $this->topScores = (array_key_exists('data',$this->topScores))? collect($this->topScores['data'])->sortByDesc('best_score')->values()->toArray() : [];
+        // dd($this->topScores) ;
     }
     
     public function render()

@@ -207,7 +207,7 @@
                     </div>
                     <ul class="list-group text-start">
                         <li class="list-group-item d-flex justify-content-between"><span>Réussites</span><strong>{{ $quizzSuccessRate }}%</strong></li>
-                        <li class="list-group-item d-flex justify-content-between"><span>Participation</span><strong>{{ number_format($quizzParticipantCount / $user_number * 100, 1) }}%</strong></li>
+                        <li class="list-group-item d-flex justify-content-between"><span>Participation</span><strong>{{ ($user_number > 0 )? number_format($quizzParticipantCount / $user_number * 100, 1) : 0 }}%</strong></li>
                     </ul>
                 </div>
             </div>

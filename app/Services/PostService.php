@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use InvalidArgumentException;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
@@ -71,12 +72,18 @@ class PostService
         $params = [];
         // if (!empty($relation)) $params['with_relations'] = implode(',', $relation);
         if (!empty($relation)) $params['with_relations'] = 'true';
+
+        $cached_data = Cache::get("post_{$id}") ;
+        if(!is_null($cached_data)){
+            return $cached_data;
+        }
         
         $response = Http::withToken(session('token'))->withHeaders(['Accept' => 'application/json'])
         ->get(env('API_SERVICE_URL') .'/api/blogs/post/'.$id, $params);
 
         if ($response->successful()) {
             $data = $response->json()['data'];
+            Cache::put("post_{$id}", $data, now()->addMinutes(5));
             return $data;
         }
 

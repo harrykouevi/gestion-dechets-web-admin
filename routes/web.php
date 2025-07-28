@@ -35,12 +35,14 @@ Route::middleware(['microauth'])->group(function () {
     Route::get('/declarations', [\App\Http\Controllers\DeclarationController::class, 'index'])->name('getsubmissions');
 
     Route::get('/quizzes', [\App\Http\Controllers\QuizController::class, 'index'])->name('quizzes.index');
-    Route::get('/rewards', [\App\Http\Controllers\RewardController::class, 'index'])->name('rewards.index');
     Route::get('/quizzes/create', [\App\Http\Controllers\QuizController::class, 'create'])->name('quizzes.create');
-    // Route::post('/quizzes', [\App\Http\Controllers\QuizController::class, 'store'])->name('quizzes.store');
     Route::get('/quizzes/{id}/edit', [\App\Http\Controllers\QuizController::class, 'edit'])->name('quizzes.edit');
+
+    Route::get('/quiz-results', [\App\Http\Controllers\QuizController::class, 'showResult'])->name('quizzes.results.show');
+
+
+    Route::get('/rewards', [\App\Http\Controllers\RewardController::class, 'index'])->name('rewards.index');
     Route::get('/rewards/create', [\App\Http\Controllers\RewardController::class, 'create'])->name('rewards.create');
-    
     Route::get('/rewards/{id}/edit', [\App\Http\Controllers\RewardController::class, 'edit'])->name('rewards.edit');
     // Route::put('/quizzes/{id}', [\App\Http\Controllers\QuizController::class, 'update'])->name('quizzes.update');
     // Route::delete('/quizzes/{id}', [\App\Http\Controllers\QuizController::class, 'destroy'])->name('quizzes.destroy') ;
@@ -51,12 +53,5 @@ Route::middleware(['microauth'])->group(function () {
     // Route::post('/posts', [\App\Http\Controllers\PostController::class, 'store'])->name('posts.store');
     Route::get('/posts/{id}/edit', [\App\Http\Controllers\PostController::class, 'edit'])->name('posts.edit');
     
-    
-    Route::get('/proxy-carte', function () {
-        $response = Http::withToken(session('token'))
-            ->get(env('MAP_SERVICE_URL').'/api/map-directions?start=48.857547,2.351376&end=48.866547,2.351376&alternatives=3');
-        return response($response->body(), 200)
-            ->header('Content-Type', 'text/html');
-    })->name('proxy-carte') ;
     
 });

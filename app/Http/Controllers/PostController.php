@@ -10,10 +10,10 @@ class PostController extends Controller
     public function index(Request $request)
     {
         if($request->has('report') && $request->input('report') == true ){
-            $posts =  app(StatService::class)->getPostMostRead() ;
+            $reports =  app(StatService::class)->getPostMostRead() ;
             return view('posts.report'
                 , [
-                            'datas' => $posts,
+                            'datas' => $reports,
                         ]);
         }
         return view('posts.list'); 

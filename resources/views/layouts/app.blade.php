@@ -19,7 +19,12 @@
 
     <!-- Custom styles for this template-->
     <link href="{{ asset('css/sb-admin-2.min.css')}}" rel="stylesheet">
-
+    <style>
+        .collapse .collapse-item {
+             margin-left: 20px !important ; /* Ou utilisez padding-left si vous préférez */
+        }
+    </style>
+    
      @stack('styles') <!-- for CSS -->
      @livewireStyles
 </head>

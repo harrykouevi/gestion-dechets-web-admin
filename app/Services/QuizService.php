@@ -5,6 +5,7 @@ namespace App\Services;
 use Illuminate\Support\Facades\Http;
 use InvalidArgumentException;
 use Illuminate\Support\Collection ;
+use Illuminate\Support\Facades\Cache;
 
 use function PHPUnit\Framework\isNull;
 
@@ -59,11 +60,17 @@ class QuizService
             $params['with_relations'] = 'true';
         }
 
+        $cached_data = Cache::get("quiz_{$id}") ;
+        if(!is_null($cached_data)){
+            return $cached_data;
+        }
+
         $response = Http::withToken(session('token'))
             ->withHeaders(['Accept' => 'application/json'])
             ->get(env('API_SERVICE_URL') . '/api/blogs/quizz/' . $id, $params);
 
         if ($response->successful()) {
+            Cache::put("quiz_{$id}", $response->json()['data'], now()->addMinutes(5));
             return $response->json()['data'];
         }
 
@@ -87,7 +94,7 @@ class QuizService
     {
         $params = [];
         // Valeurs par défaut
-        $params['quizId'] = $options['quizId'] ?? null;
+        $params['quizzId'] = $options['quizzId'] ?? null;
         $params['days'] = 10;
   
 

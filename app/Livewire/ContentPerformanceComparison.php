@@ -83,7 +83,9 @@ class ContentPerformanceComparison extends Component
             $o['attempts'] = !is_string($o['attempts'])? $o['attempts']->sum('total') : $o['attempts'] ;
             $this->stats[$quizId] = $o ;
             // Lancer le job pour charger en fond
-            dispatch(new LoadQuizStats($quizId));
+            // dispatch(new LoadQuizStats($quizId));
+            $job = new LoadQuizStats($quizId);
+            $job->handle(app(\App\Services\StatService::class));
         }
       
     }

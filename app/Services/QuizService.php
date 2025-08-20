@@ -133,7 +133,7 @@ class QuizService
         if ($response->successful()) {
             $data = $response->json()['data'];
             Cache::put("quiz_{$data['id']}", $response->json()['data'], now()->addMinutes(5));
-            // Cache::forget("post_{$data['quizz_id']}");
+            Cache::forget("post_{$data['id']}");
 
         }
 

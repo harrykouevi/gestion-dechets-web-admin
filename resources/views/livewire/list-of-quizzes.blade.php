@@ -1,14 +1,14 @@
 <div>
-    
+
 
     <div class="@if ($selectedQuiz) d-none @else row mb-4 @endif">
         <!-- Content Row -->
-        <div class="col-md-12">
+        {{-- <div class="col-md-12">
             <div class="card mb-4">
-                    
+
                 <div class="card-body">
                     <!-- Choix du mode -->
-                    
+
                         <h1 class="h5 mb-4 text-gray-800">Filtre _______</h1>
                         <!-- Filtres généraux incidents -->
                         <div class="row g-3"  >
@@ -24,21 +24,21 @@
                                     <option value="client">privé</option>
                                 </select>
                             </div>
-                    
+
                             <hr class="my-4">
-                        
+
                             <div class="col-md-12">
                                 <h1 class="h5 mt-4 text-gray-800">Date de création</h1>
-                        
-                                
+
+
                             </div>
-            
+
                             <div class="col-md-6">
-                               
+
                                 <label for="date" class="form-label">Entre</label>
                                 <input id="date" wire:model="filterDate" type="date" class="form-control" />
                             </div>
-            
+
 
                             <div class="col-md-6">
 
@@ -49,7 +49,7 @@
 
                         <!-- Filtres géographiques incidents -->
                         <hr class="my-4">
-                        
+
                     <!-- Bouton -->
                     <div class="d-flex justify-content-end mt-4">
                         <button wire:click="resetFilters" class="btn btn-outline-secondary mr-2 disabled">🔄 Réinitialiser</button>
@@ -60,10 +60,10 @@
                 </div>
 
             </div>
-        </div>
+        </div> --}}
         <div class="col-md-12">
             <div class="card shadow mb-4">
-                
+
                 <div class="card-body">
                     <div class="table-responsive">
                         <table class="table table-bordered" id="incidentTypesTable" width="100%" cellspacing="0">
@@ -72,9 +72,6 @@
                                     {{-- <th>#</th> --}}
                                     <th>Titre</th>
                                     <th>Post lié</th>
-                                    <th>Nombre de tentatives</th>
-                                    <th>Taux de réussite</th>
-                                    <th>Moyenne de score</th>
                                     <th>Date de création</th>
 
                                     <th>Actions</th>
@@ -89,21 +86,19 @@
                                         <a href="{{ route('posts.edit',['id'=>$data["postId"]]) }}" class="text-bold text-dark">voir le Post</a>
 
                                     </td>
-                                
-                                    
-                                    <td> 10</td>
-                                    <td> 70 % </td>
-                                    <td> 7 </td>
+
+
+
                                     <td>{{ array_key_exists("createdAt", $data ) ? \Carbon\Carbon::parse( $data['createdAt'])->format('d M Y') : '2025-05-13' }}</td>
                                     <td>
-                                        
+
                                         {{-- <a href="{{ route('quizzes.edit',  $data['id']) }}" class="btn btn-sm btn-info"> Statistique détaillés</a> --}}
                                         <a href="{{ route('rewards.create',['quizId'=>$data['id']]) }}" class="btn btn-sm btn-success   shadow ">🚀 Ajouter une récompenses</a>
                                         <a href="{{ route('quizzes.edit', ['id'=> $data['id']]  ) }}" class="btn btn-sm btn-warning">✏️ Modifier</a>
-                
+
                                         <button class="btn btn-sm btn-danger open-delete-modal" data-id="{{ $data['id'] }}">
-                                                🗑️ Supprimer
-                                            </button>
+                                            🗑️ Supprimer
+                                        </button>
 
                                     </td>
                                 </tr>
@@ -114,10 +109,10 @@
                 </div>
             </div>
         </div>
-        
+
 
     </div>
-   
+
     <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">

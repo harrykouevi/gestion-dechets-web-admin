@@ -27,7 +27,7 @@ class BoardPostStatCard extends Component
         if($this->stat['key'] == 'quizAttemptCount') $this->stat['value'] =  $o['attempts'] ;
         if($this->stat['key'] == 'quizzSuccessRate') $this->stat['value'] =  $o['success_rate'] ;
         if($this->stat['key'] == 'quizzAverageScore')$this->stat['value'] = $o['average_score'] ;
-       
+
         // Lancer le job pour charger en fond
         dispatch(new LoadQuizStats());
     }

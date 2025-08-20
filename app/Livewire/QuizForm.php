@@ -40,13 +40,17 @@ class QuizForm extends Component
 
     protected function loadExistingQuiz($id)
     {
+       
         $this->quizz = $quizz = $this->quizzService->get($id, ['post']);
+        // dd($this->quizz) ;
         $this->quizz_postId = $quizz['postId'];
         $this->quizzId = $quizz['id'];
         $this->quizz_titre = $quizz['titre'];
         $this->quizz_passing_score = $quizz['passingScore'] ?? 0;
         $this->quizz_nombre_question = $quizz['nombreQuestion'] ?? 1;
         $this->quizz_questions = $quizz['questions'];
+
+        $this->post = $this->getPost();
 
         foreach ($quizz['questions'] as $q_key => $question) {
             $this->quizz_questions[$q_key]['type'] = $question['type'] ?? 'single_choice';

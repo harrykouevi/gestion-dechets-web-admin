@@ -23,8 +23,36 @@
         .collapse .collapse-item {
              margin-left: 20px !important ; /* Ou utilisez padding-left si vous préférez */
         }
+
+        .select2-container--default.select2-selection--single {
+            background-color: #fff;
+            border: 1px solid #aaa;
+            border-radius: 10px;
+            box-shadow: 0 .125rem .25rem 0 rgba(58, 59, 69, .2) !important;
+        }
+
+        .select2-container .select2-selection--single {
+
+            height: calc(1.5em + .75rem + 2px) !important;
+            padding: .375rem .75rem 0  calc(.75rem - 4px) !important;
+            font-size: 1rem;
+            font-weight: 400;
+            background-clip: padding-box;
+            border: 1px solid #d1d3e2 !important;
+            border-radius: .35rem !important;
+            transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+            box-shadow: 0 .125rem .25rem 0 rgba(58, 59, 69, .2) !important;
+        }
+
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 1.5 !important;
+            color: #6e707e !important;
+        }
+
+
     </style>
-    
+
      @stack('styles') <!-- for CSS -->
      @livewireStyles
 </head>
@@ -37,7 +65,7 @@
         <!-- Sidebar -->
         @include('layouts.sidebar')
         <!-- End of Sidebar -->
-        
+
 
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -253,7 +281,7 @@
                 <div class="container-fluid">
 
                     @yield('content') <!-- Contenu spécifique à chaque page -->
-                    
+
 
                 </div>
                 <!-- /.container-fluid -->
@@ -316,12 +344,53 @@
 
     <!-- Page level plugins -->
     <script src="{{ asset('vendor/chart.js/Chart.min.js')}}"></script>
-    
+
     <!-- Page level custom scripts -->
     <script src="{{ asset('js/demo/chart-area-demo.js')}}"></script>
     <script src="{{ asset('js/demo/chart-pie-demo.js')}}"></script>
     @livewireScripts
-    @stack('scripts') <!-- for CSS -->
+    <script>
+     function initMap(tag, data ) {
+        let tries = 0;
+        const maxTries = 20; // pour éviter boucle infinie
+        const interval = setInterval(() => {
+
+            const mapContainer = document.getElementById(tag);
+            tries++;
+
+            coordlat = data[0].latitude ;
+            coordlong = data[0].longitude;
+             // Valeurs par défaut si null
+            if (coordlong === null || coordlat === null) {
+
+                coordlat = 14.6928;
+                coordlong = -17.4375; // Exemple : Dakar
+            }
+
+            // Vérifie que la div #map existe ET qu'elle n'a pas encore de contenu Leaflet
+            if (mapContainer && mapContainer.children.length === 0) {
+                clearInterval(interval);
+
+                const map = L.map(tag).setView([coordlat,coordlong], 15);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap'
+                }).addTo(map);
+                L.marker([coordlat, coordlong]).addTo(map)
+                    .bindPopup(data[0].where)
+                    .openPopup();
+
+            }
+
+            // Arrête si trop de tentatives (par ex. 20 x 300ms = 6s)
+            if (tries >= maxTries) {
+                clearInterval(interval);
+                console.warn('Impossible d\'initialiser la carte : élément #map introuvable ou déjà chargé');
+            }
+
+        }, 300);
+    }
+    </script>
+    @stack('scripts') <!-- for js -->
 </body>
 
 </html>

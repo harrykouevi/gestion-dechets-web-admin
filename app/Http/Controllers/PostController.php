@@ -21,12 +21,7 @@ class PostController extends Controller
 
     public function create()
     {
-        $postId = Null ;
-        $datas = [[1],[2],[3]] ;
-        $post = [ 
-           "questions" => [["propositions"  => [[1],[2],[3]]],["propositions"  => [[1],[2],[3]]],["propositions"  => [[1],[2],[3]]]] ,
-        ] ;
-        return view('posts.edit',compact('datas','post','postId')); 
+        return view('posts.edit'); 
     }
 
     public function edit($id)

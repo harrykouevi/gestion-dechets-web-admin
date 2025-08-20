@@ -11,4 +11,15 @@ class WasteTypeController extends Controller
        
          return view('wastetypes.list'); 
     }
+
+    public function create()
+    {
+        return view('wastetypes.edit'); 
+    }
+
+    public function edit($id)
+    {
+
+        return view('wastetypes.edit', compact('id'));
+    }
 }

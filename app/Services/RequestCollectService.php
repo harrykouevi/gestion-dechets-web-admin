@@ -6,27 +6,40 @@ use App\Models\User;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 
-class PostService
+class RequestCollectService
 {
     use ServiceTrait ;
 
-    public function getAll(Array $relation = [], int $perPage = null )
+    public function getAll($user_id = null ,Array $param_ = [], int $perPage = null )
     {
-        $params = [];
+        $params = [...$param_];
         // if (!empty($relation)) $params['with_relations'] = implode(',', $relation);
-        if (!empty($relation)) $params['with_relations'] = 'true';
+        if (!empty($param_)) {
+
+            $params['with_relations'] = 'true';
+        }
+
+
+        // if (!empty($relation)) $params['with_relations'] = implode(',', $relation);
         if (!is_null($perPage)) $params['per_page'] = $perPage;
 
-        $response = Http::withToken(session('token'))->withHeaders(['Accept' => 'application/json'])
-        ->get(env('API_SERVICE_URL') .'/api/blogs/post', $params);
+        if(is_null($user_id)){
+            $response = Http::withToken(session('token'))->withHeaders(['Accept' => 'application/json'])
+            ->get(env('API_SERVICE_URL') .'/api/demande-collectes/get', $params);
+        }else{
+            $response = Http::withToken(session('token'))->withHeaders(['Accept' => 'application/json'])
+            ->get(env('API_SERVICE_URL') .'/api/demande-collectes/user/get/'.$user_id, $params);
+        }
 
         if ($response->successful()) {
             $data = $response->json()['data'];
             return collect($data);
         }
 
-        abort(500, 'Erreur lors de la récupération des posts.');
+        abort(404, 'Erreur lors de la récupération des posts.');
     }
+
+
 
 
     public function search(String $search , Array $relation = [], int $perPage = Null)  {
@@ -58,16 +71,15 @@ class PostService
     public function get($id,Array $relation=[])
     {
         $params = [];
-        // if (!empty($relation)) $params['with_relations'] = implode(',', $relation);
         if (!empty($relation)) $params['with_relations'] = 'true';
 
-        $cached_data = Cache::get("post_{$id}") ;
-        if(!is_null($cached_data)){
-            return $cached_data;
-        }
+        // $cached_data = Cache::get("post_{$id}") ;
+        // if(!is_null($cached_data)){
+        //     return $cached_data;
+        // }
 
         $response = Http::withToken(session('token'))->withHeaders(['Accept' => 'application/json'])
-        ->get(env('API_SERVICE_URL') .'/api/blogs/post/'.$id, $params);
+        ->get(env('API_SERVICE_URL') .'/api/demande-collectes/get/'.$id, $params);
 
         if ($response->successful()) {
             $data = $response->json()['data'];
@@ -76,7 +88,7 @@ class PostService
         }
 
         // Gérer les erreurs ici
-        abort(404, 'Erreur lors de la récupération du post.');
+        abort(404, 'Erreur lors de la récupération des posts.');
     }
 
 
@@ -86,7 +98,7 @@ class PostService
         $data['admin_id'] = session('user')['id'];
 
         $http = Http::withToken(session('token'))
-          ->asMultipart() // Nécessaire pour les fichiers
+                    ->asMultipart() // Nécessaire pour les fichiers
                     ->withHeaders(['Accept' => 'application/json']);
 
 
@@ -101,17 +113,13 @@ class PostService
             }
         }
 
-        $endpoint = $data['type'] === 'educatif'
-            ? env('API_SERVICE_URL') . "/api/blogs/post/educatif"
-            : env('API_SERVICE_URL') . "/api/blogs/post";
-
-
+        $endpoint = env('API_SERVICE_URL') . "/api/demande-collectes/create";
 
         $response = $http->post($endpoint, $data);
 
         if ($response->successful()) {
             $data = $response->json()['data'];
-            Cache::put("post_{$data['id']}", $data, now()->addMinutes(5));
+            // Cache::put("post_{$data['id']}", $data, now()->addMinutes(5));
         }
 
         return $this->render($response);
@@ -124,18 +132,16 @@ class PostService
         $data['admin_id']= session('user')['id'];
 
         $http = Http::withToken(session('token'))
-          ->asMultipart() // Nécessaire pour les fichiers
+                    ->asMultipart() // Nécessaire pour les fichiers
                     ->withHeaders(['Accept' => 'application/json']);
 
          // Spoof de la méthode PATCH
         $http = $http->attach('_method', 'PATCH');
 
         foreach ($mediaFiles as $index => $media) {
-
             if (!empty($media['file'])) {
                 $http = $this->attachFileToHttp($http, "medias[$index][file]", $media['file']);
             }
-
             $data["medias[$index][type]"] = 'image';
             if (isset($media['type'])) {
                 $data["medias[$index][type]"] = $media['type'];
@@ -143,11 +149,10 @@ class PostService
         }
 
 
-        $response = $http->post(env('API_SERVICE_URL') . "/api/blogs/post/update/".$id, $data);
-
+        $response = $http->post(env('API_SERVICE_URL') . "/api/demande-collectes/update/".$id, $data);
         if ($response->successful()) {
             $data = $response->json()['data'];
-            Cache::put("post_{$data['id']}", $data, now()->addMinutes(5));
+            // Cache::put("post_{$data['id']}", $data, now()->addMinutes(5));
         }
 
         return $this->render($response);
@@ -157,10 +162,10 @@ class PostService
     {
         $response = Http::withToken(session('token'))
             ->withHeaders(['Accept' => 'application/json'])
-            ->delete(env('API_SERVICE_URL') . "/api/blogs/post/delete/".$id);
+            ->delete(env('API_SERVICE_URL') . "/api/demande-collectes/delete/".$id);
 
         if ($response->successful()) {
-            Cache::forget("post_{$id}");
+            // Cache::forget("post_{$id}");
         }
 
         return $this->render($response);

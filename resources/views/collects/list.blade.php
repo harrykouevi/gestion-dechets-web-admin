@@ -1,7 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Ménages')
+@section('title', 'Les posts éducatifs')
 
+@push('styles')
+ <!-- ✅ CSS de Leaflet -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+@endpush
 
 @section('content')
     <!-- Fil d'Ariane -->
@@ -11,13 +16,14 @@
                 <a href="">🏠 Tableau de bord</a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">
-                Gestion des ménages
+                Gestion des collectes
             </li>
         </ol>
     </nav>
-     <!-- Titre principal + bouton retour -->
+
+    <!-- Titre principal + bouton retour -->
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="h3 mb-2 text-gray-800">Ménages</h1>
+        <h1 class="h3 text-gray-800 mb-0">Les collectes</h1>
         <a href="{{ route('dashboard') }}" class="btn btn-sm btn-secondary">
             ← Retour au tableau de bord
         </a>
@@ -28,6 +34,40 @@
 
     <!-- Content Row -->
 
-    @livewire('list-of-menages') <!-- Include the Livewire component -->
+    @livewire('list-of-collectes') <!-- Include the Livewire component -->
+
+
 
 @endsection
+
+
+
+@push('scripts')
+
+
+<!-- ✅ JS de Leaflet -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+<script>
+
+
+    window.addEventListener('post-deleted', function () {
+
+        document.getElementById('closeModalLabel').click();
+
+    });
+
+    Livewire.on('updateMap', (data) => {
+        initMap('map',  data);
+    });
+
+
+</script>
+<!-- JS Bootstrap + Leaflet -->
+
+
+
+
+
+@endpush

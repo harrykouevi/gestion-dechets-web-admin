@@ -62,7 +62,7 @@
 </style>
 @endpush
 
-@section('content') 
+@section('content')
     <!-- Page Heading -->
     <nav aria-label="breadcrumb" class="mb-3">
         <ol class="breadcrumb">
@@ -87,8 +87,8 @@
         @php
             $stats = [
                 ['title' => 'Utilisateurs', 'value' => $user_number, 'icon' => 'fas fa-users', 'color' => 'primary'],
-                ['title' => 'Déchets collectés', 'value' => 40045, 'icon' => 'fas fa-recycle', 'color' => 'success'],
-                ['title' => 'En attente de collecte', 'value' => '50%', 'icon' => 'fas fa-clock', 'color' => 'info', 'progress' => 50],
+                ['title' => 'Nombre de collectes', 'value' => $collectcount, 'icon' => 'fas fa-recycle', 'color' => 'success'],
+                ['title' => 'En attente de collecte', 'value' => $requestcount, 'icon' => 'fas fa-clock', 'color' => 'info'],
                 ['title' => 'Agents actifs', 'value' => $agent_number, 'icon' => 'fas fa-user-check', 'color' => 'primary'],
             ];
         @endphp
@@ -158,7 +158,7 @@
             </div>
         </div>
         @else
-            @livewire('board-post-stat-card', ['stat' => $stat]) 
+            @livewire('board-post-stat-card', ['stat' => $stat])
         @endif
         @endforeach
     </div>
@@ -169,7 +169,7 @@
     <h4 class="mb-3 text-primary fw-bold">Analyse détaillée</h4>
     <div class="row g-4 mb-4">
         <!-- Graphique Vue d’ensemble -->
-        <div class="col-lg-8">
+        {{-- <div class="col-lg-8">
             <div class="card shadow">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span class="fw-bold m-0 font-weight-bold text-primary">Vue d’ensemble des collectes</span>
@@ -182,16 +182,13 @@
                 <div class="card-body">
                     <canvas id="overviewChart" height="120"></canvas>
                     <div class="mt-4">
-                        <h5 class="fw-bold">12.340</h5>
-                        <p class="text-success small mb-1">+3.1% par rapport à la semaine dernière</p>
                         <div class="row">
-                            <div class="col">Réussites : <strong>6.248</strong></div>
-                            <div class="col">Échecs : <strong>2.415</strong></div>
+
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Quizzes et Scores -->
         <div class="col-lg-4">
@@ -207,26 +204,19 @@
                     </div>
                     <ul class="list-group text-start">
                         <li class="list-group-item d-flex justify-content-between"><span>Réussites</span><strong>{{ $quizzSuccessRate }}%</strong></li>
-                        <li class="list-group-item d-flex justify-content-between"><span>Participation</span><strong>{{ ($user_number > 0 )? number_format($quizzParticipantCount / $user_number * 100, 1) : 0 }}%</strong></li>
+                        <li class="list-group-item d-flex justify-content-between"><span>Participation</span><strong>{{ (is_int($user_number) && $user_number > 0 )? number_format($quizzParticipantCount / $user_number * 100, 1).' %' : $user_number }}</strong></li>
                     </ul>
                 </div>
             </div>
         </div>
-    </div>
-
-    <hr class="my-2">
-
-    <!-- Carte interactive -->
-    <h4 class="mb-3 text-primary fw-bold">Carte interactive</h4>
-    <div class="row">
-        <div class="col-lg-12 mb-4">
+        <div class="col-lg-8 mb-4">
             <div class="card shadow">
-                
+
                 <div class="card-body">
                     <div id="vimeo-player-container" style="position: relative; width: 100%; cursor: pointer;">
                         <!-- Tu peux remplacer l'src de l'image par une miniature personnalisée -->
-                        {{-- <img src="{{ asset('img/290497-P72QT9-640.jpg') }}" 
-                            alt="Aperçu Pollution" 
+                        {{-- <img src="{{ asset('img/290497-P72QT9-640.jpg') }}"
+                            alt="Aperçu Pollution"
                             style="width: 100%; height: auto; display: block;">
                         <!-- Bouton Play centré -->
                         <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
@@ -288,6 +278,6 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 
-    
+
 </script>
 @endpush

@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 use InvalidArgumentException;
 
-class MenageService
+class AddressService
 {
     use ServiceTrait ;
 
@@ -25,7 +25,7 @@ class MenageService
 
 
         $response = Http::withToken(session('token'))->withHeaders(['Accept' => 'application/json'])
-        ->get(env('API_SERVICE_URL') .'/api/users/domicile/get', $params);
+        ->get(env('API_SERVICE_URL') .'/api/address/users/get', $params);
 
         if ($response->successful()) {
             $data = $response->json()['data'];
@@ -62,7 +62,7 @@ class MenageService
     }
 
 
-    public function get($id,Array $relations=[])
+    public function getByUser($id,Array $relations=[])
     {
         $params = [];
         // if (!empty($relation)) $params['with_relations'] = implode(',', $relation);
@@ -74,7 +74,7 @@ class MenageService
         }
 
         $response = Http::withToken(session('token'))->withHeaders(['Accept' => 'application/json'])
-        ->get(env('API_SERVICE_URL') .'/api/users/domicile/get/'.$id, $params);
+        ->get(env('API_SERVICE_URL') .'/api/address/users/get/'.$id, $params);
 
         if ($response->successful()) {
             $data = $response->json()['data'];
@@ -88,14 +88,5 @@ class MenageService
 
     }
 
-    public function create(array $data) //Password125
-    {
-        $response = Http::withToken(session('token'))
-            ->withHeaders(['Accept' => 'application/json'])
-            ->post(env('API_SERVICE_URL') . "/api/auth/register/domicile", $data);
-
-        return $this->render($response);
-
-    }
 
 }

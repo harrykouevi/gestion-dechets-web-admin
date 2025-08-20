@@ -69,12 +69,13 @@ class QuizService
             ->withHeaders(['Accept' => 'application/json'])
             ->get(env('API_SERVICE_URL') . '/api/blogs/quizz/' . $id, $params);
 
-        if ($response->successful()) {
+         if ($response->successful()) {
             Cache::put("quiz_{$id}", $response->json()['data'], now()->addMinutes(5));
             return $response->json()['data'];
         }
 
-        throw new \Exception('Erreur lors de la récupération du post');
+        abort(404, 'Erreur lors de la récupération du quiz.');
+
     }
 
    
@@ -129,6 +130,13 @@ class QuizService
             ->withHeaders(['Accept' => 'application/json'])
             ->post(env('API_SERVICE_URL') . $url, $data);
 
+        if ($response->successful()) {
+            $data = $response->json()['data'];
+            Cache::put("quiz_{$data['id']}", $response->json()['data'], now()->addMinutes(5));
+            Cache::forget("post_{$data['quizz_id']}");
+
+        }
+
         return $this->render($response);
     }
 
@@ -146,6 +154,12 @@ class QuizService
         $response = Http::withToken(session('token'))
             ->withHeaders(['Accept' => 'application/json'])
             ->patch(env('API_SERVICE_URL') . "/api/blogs/quizz/update/" . $id, $data);
+        
+        if ($response->successful()) {
+            $data = $response->json()['data'];
+            Cache::put("quiz_{$data['id']}", $response->json()['data'], now()->addMinutes(5));
+            Cache::forget("post_{$data['postId']}");
+        }
 
         return $this->render($response);
     }
@@ -161,6 +175,11 @@ class QuizService
         $response = Http::withToken(session('token'))
             ->withHeaders(['Accept' => 'application/json'])
             ->delete(env('API_SERVICE_URL') . "/api/blogs/quizz/delete/" . $id);
+
+        if ($response->successful()) {
+            Cache::forget("quiz_{$id}");
+
+        }
 
         return $this->render($response);
     }

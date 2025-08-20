@@ -4,6 +4,8 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
 use InvalidArgumentException;
+use Illuminate\Support\Facades\Cache;
+
 
 class QuestionService
 {
@@ -37,7 +39,7 @@ class QuestionService
             return collect($response->json()['data']);
         }
 
-        throw new \Exception('Erreur lors de la récupération des posts');
+        abort(404, 'Erreur lors de la récupération des questions.');
     }
 
     /**
@@ -56,11 +58,17 @@ class QuestionService
             $params['with_relations'] = 'true';
         }
 
+        $cached_data = Cache::get("question_{$id}") ;
+        if(!is_null($cached_data)){
+            return $cached_data;
+        }
+
         $response = Http::withToken(session('token'))
             ->withHeaders(['Accept' => 'application/json'])
             ->get(env('API_SERVICE_URL') . '/api/blogs/question/' . $id, $params);
 
         if ($response->successful()) {
+            Cache::put("question_{$id}", $response->json()['data'], now()->addMinutes(5));
             return $response->json()['data'];
         }
 
@@ -75,6 +83,7 @@ class QuestionService
      */
     public function create(array $data)
     {
+        
         $data['admin_id'] = session('user')['id'];
 
         // Si le type du post est éducatif, utiliser une URL spécifique
@@ -83,6 +92,13 @@ class QuestionService
         $response = Http::withToken(session('token'))
             ->withHeaders(['Accept' => 'application/json'])
             ->post(env('API_SERVICE_URL') . $url, $data);
+
+        if ($response->successful()) {
+            $rep = $response->json()['data'];
+            Cache::put("question_{$rep['id']}", $response->json()['data'], now()->addMinutes(5));
+            Cache::forget("quiz_{$rep['quizzId']}");
+
+        }
 
         return $this->render($response);
     }
@@ -96,11 +112,20 @@ class QuestionService
      */
     public function update(string $id, array $data) 
     {
+        
         $data['admin_id'] = session('user')['id'];
 
         $response = Http::withToken(session('token'))
             ->withHeaders(['Accept' => 'application/json'])
             ->patch(env('API_SERVICE_URL') . "/api/blogs/question/update/" . $id, $data);
+
+        // dd($response)  ;
+        
+        if ($response->successful()) {
+            $rep = $response->json()['data'];
+            Cache::put("question_{$rep['id']}", $response->json()['data'], now()->addMinutes(5));
+            Cache::forget("quiz_{$rep['quizzId']}");
+        }
 
         return $this->render($response);
     }
@@ -116,6 +141,11 @@ class QuestionService
         $response = Http::withToken(session('token'))
             ->withHeaders(['Accept' => 'application/json'])
             ->delete(env('API_SERVICE_URL') . "/api/blogs/question/delete/" . $id);
+        
+        if ($response->successful()) {
+            Cache::forget("question_{$id}");
+
+        }
 
         return $this->render($response);
     }

@@ -78,7 +78,7 @@ class QuizService
 
     }
 
-   
+
 
     /**
      * Recupere les tentatives aux  quiz.
@@ -97,7 +97,7 @@ class QuizService
         // Valeurs par défaut
         $params['quizzId'] = $options['quizzId'] ?? null;
         $params['days'] = 10;
-  
+
 
 
         $response = Http::withToken(session('token'))
@@ -111,7 +111,7 @@ class QuizService
         throw new \Exception('Erreur lors de la récupération des posts');
     }
 
-    
+
 
     /**
      * Crée un nouveau post (éducatif ou standard) pour l’admin connecté.
@@ -133,7 +133,7 @@ class QuizService
         if ($response->successful()) {
             $data = $response->json()['data'];
             Cache::put("quiz_{$data['id']}", $response->json()['data'], now()->addMinutes(5));
-            Cache::forget("post_{$data['quizz_id']}");
+            // Cache::forget("post_{$data['quizz_id']}");
 
         }
 
@@ -147,14 +147,14 @@ class QuizService
      * @param array $data
      * @return mixed
      */
-    public function update(string $id, array $data) 
+    public function update(string $id, array $data)
     {
         $data['admin_id'] = session('user')['id'];
 
         $response = Http::withToken(session('token'))
             ->withHeaders(['Accept' => 'application/json'])
             ->patch(env('API_SERVICE_URL') . "/api/blogs/quizz/update/" . $id, $data);
-        
+
         if ($response->successful()) {
             $data = $response->json()['data'];
             Cache::put("quiz_{$data['id']}", $response->json()['data'], now()->addMinutes(5));
